@@ -380,7 +380,7 @@ button:focus-visible {
     color: var(--accent) !important;
     font-family: 'Forum', serif !important;
     font-weight: 400 !important;
-    letter-spacing: -.1em;
+    letter-spacing: -.02em;
     text-wrap: balance;
 }
 
