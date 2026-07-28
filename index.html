@@ -349,6 +349,26 @@
     </style>
     <link href="./src/enhancements.css" rel="stylesheet">
     <link rel="icon" href="./src/favicon.svg" type="image/svg+xml">
+
+    <style>
+        /* Final home-screen spacing adjustment. */
+        .page-home .hero-label {
+            margin-top: clamp(16px, 1.45vw, 24px) !important;
+        }
+
+        @media (min-width: 992px) {
+            /* Move the complete hero composition down without changing document height. */
+            .page-home .hero-row {
+                transform: translateY(clamp(24px, 3.2vh, 38px));
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .page-home .hero-label {
+                margin-top: 16px !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="page-home">
@@ -373,20 +393,22 @@
             <div class="row hero-row">
                 <div class="col-lg-7 d-flex align-items-bottom">
                     <div class="hero-text">
-                        <p class="hero-label">PORTFOLIO / SELECTED WORKS</p>
                         <p class="hero-kicker">Hi, I’m</p>
                         <h1 class="hero-title">Madina Ganieva</h1>
                         <p class="hero-subtitle">Designer &amp; Digital Media Creator</p>
+                        <p class="hero-label">PORTFOLIO / SELECTED WORKS</p>
                     </div>
                 </div>
 
                 <div class="col-lg-5">
                     <div class="hero-visual">
-                        <div class="polaroid-scene">
-                            <div class="outline-frame"></div>
-                            <img src="./src/polaroid.png" alt="Polaroid photo" class="img-fluid polaroid-image">
-                            <img src="./src/clip.png" alt="Paper clip" class="img-fluid clip-image">
-                        </div>
+                        <a href="about.html" class="hero-polaroid-link" aria-label="Open the About page">
+                            <div class="polaroid-scene">
+                                <div class="outline-frame"></div>
+                                <img src="./src/polaroid.png" alt="Madina Ganieva holding a camera" class="img-fluid polaroid-image">
+                                <img src="./src/clip.png" alt="" class="img-fluid clip-image" aria-hidden="true">
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>

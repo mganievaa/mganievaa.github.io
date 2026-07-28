@@ -165,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const scene = document.querySelector('.polaroid-scene');
     if (scene && !reduceMotion && finePointer) {
         scene.addEventListener('pointermove', (event) => {
-            if (scene.classList.contains('is-processing')) return;
             const bounds = scene.getBoundingClientRect();
             const x = (event.clientX - bounds.left) / bounds.width - 0.5;
             const y = (event.clientY - bounds.top) / bounds.height - 0.5;
@@ -205,8 +204,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="project-view-note">click any frame for fullscreen</span>
             `;
             projectTitle.before(intro);
-            introCopy.append(projectTitle, projectText);
-            intro.append(introMeta, introCopy);
+            introCopy.append(projectTitle, introMeta, projectText);
+            intro.append(introCopy);
 
             const viewer = document.createElement('div');
             viewer.className = 'project-viewer';
@@ -313,7 +312,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
 
-            openButton.addEventListener('click', () => openViewer(0));
+            const handleOpenSeries = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                openViewer(0);
+            };
+            openButton.addEventListener('click', handleOpenSeries);
             closeButton.addEventListener('click', closeViewer);
             prevButton.addEventListener('click', showPrev);
             nextButton.addEventListener('click', showNext);
@@ -347,12 +351,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Modern circular cursor for mouse and trackpad users.
+    // Vector cursor for mouse and trackpad users. The ring scales inside SVG,
+    // so its contour stays crisp on high-DPI screens and interactive hover states.
     if (finePointer && !reduceMotion) {
         const cursor = document.createElement('div');
         cursor.className = 'modern-cursor';
         cursor.setAttribute('aria-hidden', 'true');
-        cursor.innerHTML = '<span></span>';
+        cursor.innerHTML = `
+            <svg viewBox="0 0 64 64" focusable="false" aria-hidden="true">
+                <circle class="modern-cursor-ring" cx="32" cy="32" r="15" vector-effect="non-scaling-stroke"></circle>
+                <circle class="modern-cursor-dot" cx="32" cy="32" r="2.4"></circle>
+            </svg>
+        `;
         body.appendChild(cursor);
         body.classList.add('cursor-enabled');
 
@@ -360,13 +370,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let targetY = -100;
         let currentX = -100;
         let currentY = -100;
-        let cursorScale = 1;
         let isInteractive = false;
 
         const renderCursor = () => {
             currentX += (targetX - currentX) * 0.28;
             currentY += (targetY - currentY) * 0.28;
-            cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%) scale(${cursorScale})`;
+            cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`;
             requestAnimationFrame(renderCursor);
         };
         requestAnimationFrame(renderCursor);
@@ -379,27 +388,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.documentElement.addEventListener('mouseleave', () => cursor.classList.remove('is-visible'));
 
-        document.querySelectorAll('a, button, .work-card, .gallery-view-trigger, .viewer-image').forEach((element) => {
+        const interactiveSelector = 'a, button, .work-card, .gallery-view-trigger, .viewer-image';
+        document.querySelectorAll(interactiveSelector).forEach((element) => {
             element.addEventListener('pointerenter', () => {
                 isInteractive = true;
-                cursorScale = 1.42;
                 cursor.classList.add('is-active');
             });
             element.addEventListener('pointerleave', () => {
                 isInteractive = false;
-                cursorScale = 1;
                 cursor.classList.remove('is-active');
             });
         });
 
-        document.addEventListener('pointerdown', () => {
-            cursorScale = .72;
-            cursor.classList.add('is-pressed');
-        });
-
+        document.addEventListener('pointerdown', () => cursor.classList.add('is-pressed'));
         document.addEventListener('pointerup', () => {
-            cursorScale = isInteractive ? 1.42 : 1;
             cursor.classList.remove('is-pressed');
+            cursor.classList.toggle('is-active', isInteractive);
         });
     }
 
