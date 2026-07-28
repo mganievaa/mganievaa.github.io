@@ -1,41 +1,50 @@
-# Madina Ganieva — portfolio
+<h1 align="center">Madina Ganieva — Portfolio</h1>
 
-Обновлённая версия портфолио с сохранением исходной бордово-молочной палитры.
+<p align="center">
+  Designer &amp; Digital Media Creator
+</p>
 
-## Что улучшено
+<p align="center">
+  <a href="https://www.behance.net/madinaganieva">View the portfolio</a>
+</p>
 
-- единая адаптивная типографика и система отступов;
-- композиция главной, страницы проектов и About;
-- анимации появления, hover-эффекты и лёгкий параллакс коллажа;
-- пиксельный курсор-сердце для мыши/трекпада;
-- полностью переработанное мобильное меню;
-- состояния фокуса, `prefers-reduced-motion`, активные пункты навигации;
-- более выразительные карточки проектов;
-- индикатор прокрутки на длинных страницах;
-- graceful fallback при отсутствии изображений галереи.
+---
 
-## Важно
+This repository contains the official portfolio of **Madina Ganieva** — a curated
+selection of branding, editorial, packaging, and digital media projects.
 
-В исходном ZIP отсутствовали папки `src/bahore`, `src/dark`, `src/kazimir` и `src/lionel`. HTML-ссылки на них сохранены. После добавления исходных изображений по прежним путям галереи заработают автоматически; до этого отображается аккуратная заглушка.
+The portfolio is designed as a visual archive of selected work rather than a public
+template or reusable website theme.
 
-## Запуск
+## Selected work
 
-Откройте `index.html` или запустите локальный сервер из корня проекта:
+- **Bahoré** — event branding and visual identity
+- **Dark Matter** — speculative packaging and information design
+- **Kazimir** — editorial and typographic project
+- **Lionel** — brand identity and visual communication
 
-```bash
-python3 -m http.server 8000
-```
+## Credits
 
-## Art direction update
+**Portfolio owner, designer, and content creator**  
+Madina Ganieva
 
-- Project galleries now use a responsive editorial rhythm. Images retain their original aspect ratio; no crop is applied.
-- The first project frame is loaded eagerly; following 6K images remain lazy-loaded to reduce initial rendering cost.
-- Clipped photo compositions on Home and About include an interactive film-burn consequence cue.
-- The mobile burger remains fixed above the menu layer and transforms into a centred close icon.
+**Editor and website presentation**  
+Omar Akhmetov
 
-## Current interaction update
+## Rights and usage
 
-- The click-to-develop photo effect and its sound were removed.
-- Home uses a lightweight animated editorial label and a modern circular cursor.
-- Work-card categories are real editable HTML elements (`.work-category`) rather than generated pseudo-content.
-- Project intros use a floating action block; the description wraps beside it and continues underneath.
+The portfolio, its case studies, photographs, graphics, written content, and visual
+identity are protected materials and are not released as an open-source template.
+
+Viewing the repository does not grant permission to copy, redistribute, modify, or
+reuse the portfolio content or design.
+
+See the [`LICENSE`](./LICENSE) file for the complete usage terms.
+
+## Contact
+
+Portfolio enquiries, collaborations, and permission requests:
+
+- **Email:** [CONTACT EMAIL]
+- **Portfolio:** [LIVE PORTFOLIO URL]
+- **Behance:** [BEHANCE URL]
