@@ -40,11 +40,3 @@ Viewing the repository does not grant permission to copy, redistribute, modify, 
 reuse the portfolio content or design.
 
 See the [`LICENSE`](./LICENSE) file for the complete usage terms.
-
-## Contact
-
-Portfolio enquiries, collaborations, and permission requests:
-
-- **Email:** [CONTACT EMAIL]
-- **Portfolio:** [LIVE PORTFOLIO URL]
-- **Behance:** [BEHANCE URL]
