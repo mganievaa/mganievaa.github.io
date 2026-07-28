@@ -91,46 +91,57 @@ document.addEventListener('DOMContentLoaded', () => {
         const items = [...gallery.querySelectorAll('.gallery-item')];
 
         items.forEach((item, index) => {
-            const image = item.querySelector('img');
+            const media = item.querySelector('img, video');
+            const isVideo = media instanceof HTMLVideoElement;
             const cycle = Math.floor(index / layoutPattern.length);
             const patternIndex = index % layoutPattern.length;
             item.classList.add(layoutPattern[patternIndex]);
+            item.classList.toggle('is-video', isVideo);
             item.style.gridRow = String(layoutRowPattern[patternIndex] + (cycle * 7));
             item.dataset.frame = `FRAME ${String(index + 1).padStart(2, '0')}`;
 
             const readOrientation = () => {
-                if (!image || !image.naturalWidth || !image.naturalHeight) return;
-                const ratio = image.naturalWidth / image.naturalHeight;
+                if (!media) return;
+                const width = isVideo ? media.videoWidth : media.naturalWidth;
+                const height = isVideo ? media.videoHeight : media.naturalHeight;
+                if (!width || !height) return;
+                const ratio = width / height;
                 item.classList.toggle('is-portrait', ratio < .9);
                 item.classList.toggle('is-square', ratio >= .9 && ratio <= 1.12);
                 item.style.setProperty('--media-ratio', ratio.toFixed(3));
             };
 
-            if (image) {
-                image.loading = index === 0 ? 'eager' : 'lazy';
-                image.decoding = 'async';
-                if (index === 0) image.fetchPriority = 'high';
-                if (image.complete) readOrientation();
-                else image.addEventListener('load', readOrientation, { once: true });
+            if (media instanceof HTMLImageElement) {
+                media.loading = index === 0 ? 'eager' : 'lazy';
+                media.decoding = 'async';
+                if (index === 0) media.fetchPriority = 'high';
+                if (media.complete) readOrientation();
+                else media.addEventListener('load', readOrientation, { once: true });
+            } else if (media instanceof HTMLVideoElement) {
+                media.preload = media.preload || 'metadata';
+                media.playsInline = true;
+                if (media.readyState >= 1) readOrientation();
+                else media.addEventListener('loadedmetadata', readOrientation, { once: true });
             }
         });
     });
 
     // Replace unavailable gallery files with a styled state while preserving their final layout slots.
-    document.querySelectorAll('.gallery-item img').forEach((image) => {
+    document.querySelectorAll('.gallery-item img, .gallery-item video').forEach((media) => {
         const showMissingState = () => {
-            const item = image.closest('.gallery-item');
+            const item = media.closest('.gallery-item');
             if (!item || item.classList.contains('media-missing')) return;
             item.classList.add('media-missing');
             const notice = document.createElement('div');
             notice.className = 'missing-media';
-            const filename = image.getAttribute('src')?.split('/').pop() || 'image';
+            const sourcePath = media.getAttribute('src') || media.querySelector('source')?.getAttribute('src') || '';
+            const filename = sourcePath.split('/').pop() || (media instanceof HTMLVideoElement ? 'video.mp4' : 'image');
             notice.textContent = `Place “${filename}” here — the editorial layout is already prepared for it.`;
             item.appendChild(notice);
         };
 
-        image.addEventListener('error', showMissingState, { once: true });
-        if (image.complete && image.naturalWidth === 0) showMissingState();
+        media.addEventListener('error', showMissingState, { once: true });
+        if (media instanceof HTMLImageElement && media.complete && media.naturalWidth === 0) showMissingState();
     });
 
     // Reveal sections and gallery items as they enter the viewport.
@@ -175,7 +186,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Immersive project pages: editorial intro, fullscreen series viewer, zoom, keyboard and swipe navigation.
+    // Immersive project pages: mixed image/video viewer, zoom for images,
+    // keyboard navigation and swipe gestures.
     if (body.classList.contains('page-project')) {
         const projectOrder = [
             { file: 'bahore.html', slug: 'bahore', title: 'Bahoré' },
@@ -188,12 +200,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const projectText = projectWrap?.querySelector('.project-text');
         const gallery = projectWrap?.querySelector('.gallery');
         const galleryItems = gallery ? [...gallery.querySelectorAll('.gallery-item')] : [];
-        const images = galleryItems.map((item) => item.querySelector('img')).filter(Boolean);
+        const mediaEntries = galleryItems
+            .map((item) => ({ item, media: item.querySelector('img, video') }))
+            .filter((entry) => entry.media);
 
-        if (projectWrap && projectTitle && projectText && gallery && images.length) {
+        if (projectWrap && projectTitle && projectText && gallery && mediaEntries.length) {
             const matchedProjectIndex = projectOrder.findIndex((project) => project.file === currentPage || body.classList.contains(`project-${project.slug}`));
             const projectIndex = matchedProjectIndex >= 0 ? matchedProjectIndex : 0;
-            const projectNumber = body.dataset.projectNumber || String(projectIndex + 1).padStart(2, '0');
             const intro = document.createElement('section');
             intro.className = 'project-intro-v4';
             const introCopy = document.createElement('div');
@@ -221,7 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="viewer-arrow viewer-prev" type="button" aria-label="Previous frame">←</button>
                 <div class="viewer-stage">
                     <div class="viewer-image-wrap">
-                        <img class="viewer-image" alt="">
+                        <img class="viewer-image" alt="" hidden>
+                        <video class="viewer-video" controls playsinline preload="metadata" hidden></video>
                     </div>
                 </div>
                 <button class="viewer-arrow viewer-next" type="button" aria-label="Next frame">→</button>
@@ -235,6 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
             body.appendChild(viewer);
 
             const viewerImage = viewer.querySelector('.viewer-image');
+            const viewerVideo = viewer.querySelector('.viewer-video');
             const viewerImageWrap = viewer.querySelector('.viewer-image-wrap');
             const viewerIndex = viewer.querySelector('.viewer-index');
             const viewerCaption = viewer.querySelector('.viewer-caption');
@@ -248,35 +263,85 @@ document.addEventListener('DOMContentLoaded', () => {
             let activeIndex = 0;
             let previousFocus = null;
             let touchStartX = 0;
+            let activeIsVideo = false;
 
             viewerName.textContent = projectTitle.textContent.trim();
 
+            const getMediaSource = (media) => (
+                media.currentSrc
+                || media.getAttribute('src')
+                || media.querySelector('source')?.getAttribute('src')
+                || ''
+            );
+
+            const getMediaCaption = (media, index) => (
+                media.dataset.caption
+                || media.getAttribute('alt')
+                || media.getAttribute('aria-label')
+                || media.getAttribute('title')
+                || `Frame ${String(index + 1).padStart(2, '0')}`
+            );
+
             const setZoom = (zoomed) => {
-                viewer.classList.toggle('is-zoomed', zoomed);
-                viewerZoom.textContent = zoomed ? 'ZOOM −' : 'ZOOM +';
+                const enabled = !activeIsVideo && zoomed;
+                viewer.classList.toggle('is-zoomed', enabled);
+                viewerZoom.textContent = enabled ? 'ZOOM −' : 'ZOOM +';
                 viewerImageWrap.scrollTo({ top: 0, left: 0, behavior: 'auto' });
             };
 
+            const stopViewerVideo = () => {
+                viewerVideo.pause();
+                viewerVideo.currentTime = 0;
+            };
+
+            const finishTransition = (width, height) => {
+                const ratio = width && height ? width / height : 1;
+                viewer.classList.toggle('is-portrait-frame', ratio < .9);
+                requestAnimationFrame(() => viewer.classList.remove('is-changing'));
+            };
+
             const renderFrame = (index, direction = 1) => {
-                activeIndex = (index + images.length) % images.length;
-                const source = images[activeIndex];
+                activeIndex = (index + mediaEntries.length) % mediaEntries.length;
+                const source = mediaEntries[activeIndex].media;
+                activeIsVideo = source instanceof HTMLVideoElement;
                 setZoom(false);
+                stopViewerVideo();
                 viewer.classList.remove('move-next', 'move-prev');
                 viewer.classList.add(direction >= 0 ? 'move-next' : 'move-prev', 'is-changing');
+                viewer.classList.toggle('is-video-frame', activeIsVideo);
 
                 window.setTimeout(() => {
-                    viewerImage.src = source.currentSrc || source.src;
-                    viewerImage.alt = source.alt || `${projectTitle.textContent.trim()} frame ${activeIndex + 1}`;
-                    viewerIndex.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(images.length).padStart(2, '0')}`;
-                    viewerCaption.textContent = source.alt || `Frame ${String(activeIndex + 1).padStart(2, '0')}`;
-                    viewerProgress.style.transform = `scaleX(${(activeIndex + 1) / images.length})`;
+                    const caption = getMediaCaption(source, activeIndex);
+                    viewerIndex.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(mediaEntries.length).padStart(2, '0')}`;
+                    viewerCaption.textContent = caption;
+                    viewerProgress.style.transform = `scaleX(${(activeIndex + 1) / mediaEntries.length})`;
+
+                    if (activeIsVideo) {
+                        viewerImage.hidden = true;
+                        viewerVideo.hidden = false;
+                        viewerVideo.poster = source.getAttribute('poster') || '';
+                        viewerVideo.src = getMediaSource(source);
+                        viewerVideo.setAttribute('aria-label', caption);
+                        viewerVideo.load();
+                        if (viewerVideo.readyState >= 1) finishTransition(viewerVideo.videoWidth, viewerVideo.videoHeight);
+                    } else {
+                        viewerVideo.hidden = true;
+                        viewerImage.hidden = false;
+                        viewerImage.src = getMediaSource(source);
+                        viewerImage.alt = caption;
+                        if (viewerImage.complete && viewerImage.naturalWidth) {
+                            finishTransition(viewerImage.naturalWidth, viewerImage.naturalHeight);
+                        }
+                    }
                 }, reduceMotion ? 0 : 130);
             };
 
             viewerImage.addEventListener('load', () => {
-                const ratio = viewerImage.naturalWidth / viewerImage.naturalHeight;
-                viewer.classList.toggle('is-portrait-frame', ratio < .9);
-                requestAnimationFrame(() => viewer.classList.remove('is-changing'));
+                finishTransition(viewerImage.naturalWidth, viewerImage.naturalHeight);
+            });
+
+            viewerVideo.addEventListener('loadedmetadata', () => {
+                finishTransition(viewerVideo.videoWidth, viewerVideo.videoHeight);
             });
 
             const openViewer = (index = 0) => {
@@ -289,7 +354,8 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             const closeViewer = () => {
-                viewer.classList.remove('is-open', 'is-zoomed');
+                stopViewerVideo();
+                viewer.classList.remove('is-open', 'is-zoomed', 'is-video-frame');
                 viewer.setAttribute('aria-hidden', 'true');
                 body.classList.remove('viewer-open');
                 if (previousFocus && typeof previousFocus.focus === 'function') previousFocus.focus({ preventScroll: true });
@@ -298,11 +364,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const showNext = () => renderFrame(activeIndex + 1, 1);
             const showPrev = () => renderFrame(activeIndex - 1, -1);
 
-            galleryItems.forEach((item, index) => {
+            mediaEntries.forEach(({ item, media }, index) => {
                 item.classList.add('gallery-view-trigger');
                 item.tabIndex = 0;
                 item.setAttribute('role', 'button');
-                item.setAttribute('aria-label', `Open frame ${index + 1} in fullscreen`);
+                item.setAttribute('aria-label', `Open ${media instanceof HTMLVideoElement ? 'video' : 'frame'} ${index + 1} in fullscreen`);
                 item.addEventListener('click', () => {
                     if (!item.classList.contains('media-missing')) openViewer(index);
                 });
@@ -397,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.documentElement.addEventListener('mouseleave', () => cursor.classList.remove('is-visible'));
 
-        const interactiveSelector = 'a, button, .work-card, .gallery-view-trigger, .viewer-image';
+        const interactiveSelector = 'a, button, .work-card, .gallery-view-trigger, .viewer-image, .viewer-video';
         document.querySelectorAll(interactiveSelector).forEach((element) => {
             element.addEventListener('pointerenter', () => {
                 isInteractive = true;
