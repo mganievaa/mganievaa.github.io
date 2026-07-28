@@ -191,7 +191,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const images = galleryItems.map((item) => item.querySelector('img')).filter(Boolean);
 
         if (projectWrap && projectTitle && projectText && gallery && images.length) {
-            const projectIndex = Math.max(0, projectOrder.findIndex((project) => project.file === currentPage || body.classList.contains(`project-${project.slug}`)));
+            const matchedProjectIndex = projectOrder.findIndex((project) => project.file === currentPage || body.classList.contains(`project-${project.slug}`));
+            const projectIndex = matchedProjectIndex >= 0 ? matchedProjectIndex : 0;
+            const projectNumber = body.dataset.projectNumber || String(projectIndex + 1).padStart(2, '0');
             const intro = document.createElement('section');
             intro.className = 'project-intro-v4';
             const introCopy = document.createElement('div');
@@ -199,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const introMeta = document.createElement('aside');
             introMeta.className = 'project-intro-meta';
             introMeta.innerHTML = `
-                <span class="project-eyebrow">PROJECT / ${String(projectIndex + 1).padStart(2, '0')}</span>
                 <button class="open-series" type="button">VIEW SERIES <span aria-hidden="true">↗</span></button>
                 <span class="project-view-note">click any frame for fullscreen</span>
             `;
@@ -342,12 +343,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (event.key === 'ArrowLeft') showPrev();
             });
 
-            const nextProject = projectOrder[(projectIndex + 1) % projectOrder.length];
-            const nextLink = document.createElement('a');
-            nextLink.className = 'next-project-link';
-            nextLink.href = nextProject.file;
-            nextLink.innerHTML = `<span>NEXT PROJECT</span><strong>${nextProject.title}</strong><i aria-hidden="true">↗</i>`;
-            projectWrap.appendChild(nextLink);
+            const hasCustomNextProject = body.hasAttribute('data-next-project-url');
+            const customNextUrl = body.dataset.nextProjectUrl?.trim() || '';
+            const customNextTitle = body.dataset.nextProjectTitle?.trim() || 'Next project';
+            const nextProject = hasCustomNextProject
+                ? (customNextUrl ? { file: customNextUrl, title: customNextTitle } : null)
+                : projectOrder[(projectIndex + 1) % projectOrder.length];
+
+            if (nextProject) {
+                const nextLink = document.createElement('a');
+                nextLink.className = 'next-project-link';
+                nextLink.href = nextProject.file;
+                nextLink.innerHTML = `<span>NEXT PROJECT</span><strong>${nextProject.title}</strong><i aria-hidden="true">↗</i>`;
+                projectWrap.appendChild(nextLink);
+            }
         }
     }
 
