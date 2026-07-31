@@ -2086,6 +2086,20 @@ body.viewer-open .modern-cursor-dot {
     fill: #f1f1f1;
 }
 
+/* Keep the custom cursor visible and high-contrast inside native video fullscreen. */
+.modern-cursor.is-native-fullscreen {
+    z-index: 2147483647;
+}
+
+.modern-cursor.is-native-fullscreen .modern-cursor-ring {
+    fill: rgba(241, 241, 241, .04);
+    stroke: rgba(241, 241, 241, .9);
+}
+
+.modern-cursor.is-native-fullscreen .modern-cursor-dot {
+    fill: #f1f1f1;
+}
+
 @media (hover: hover) and (pointer: fine) {
     body.cursor-enabled,
     body.cursor-enabled *,

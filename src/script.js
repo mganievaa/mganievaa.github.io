@@ -759,6 +759,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.documentElement.addEventListener('mouseleave', () => cursor.classList.remove('is-visible'));
 
+        // Native fullscreen only renders the fullscreen element and its descendants.
+        // Move the custom cursor into that subtree while fullscreen is active, then
+        // return it to <body> on exit so the cursor never disappears.
+        const syncFullscreenCursor = () => {
+            const fullscreenElement = document.fullscreenElement;
+
+            if (fullscreenElement) {
+                if (!fullscreenElement.contains(cursor)) fullscreenElement.appendChild(cursor);
+                cursor.classList.add('is-native-fullscreen', 'is-visible');
+            } else {
+                if (cursor.parentElement !== body) body.appendChild(cursor);
+                cursor.classList.remove('is-native-fullscreen');
+            }
+        };
+
+        document.addEventListener('fullscreenchange', syncFullscreenCursor);
+
         const interactiveSelector = 'a, button, .work-card, .gallery-view-trigger, .viewer-image, .custom-video-player, .video-seek';
         document.querySelectorAll(interactiveSelector).forEach((element) => {
             element.addEventListener('pointerenter', () => {
