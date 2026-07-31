@@ -186,6 +186,266 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Custom portfolio video player. Native browser controls are removed and
+    // replaced with a consistent, accessible interface in the site's visual language.
+    const formatMediaTime = (seconds) => {
+        if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+        const total = Math.floor(seconds);
+        const hours = Math.floor(total / 3600);
+        const minutes = Math.floor((total % 3600) / 60);
+        const secs = String(total % 60).padStart(2, '0');
+        return hours > 0
+            ? `${hours}:${String(minutes).padStart(2, '0')}:${secs}`
+            : `${minutes}:${secs}`;
+    };
+
+    const createCustomVideoPlayer = (video, options = {}) => {
+        if (!(video instanceof HTMLVideoElement)) return null;
+        if (video.customPlayerApi) return video.customPlayerApi;
+
+        const shell = document.createElement('div');
+        shell.className = `custom-video-player ${options.viewer ? 'is-viewer-player' : 'is-gallery-player'}`;
+        shell.tabIndex = 0;
+        shell.setAttribute('role', 'group');
+        shell.setAttribute('aria-label', video.dataset.caption || video.getAttribute('aria-label') || 'Video player');
+
+        const parent = video.parentNode;
+        parent.insertBefore(shell, video);
+        shell.appendChild(video);
+
+        video.controls = false;
+        video.removeAttribute('controls');
+        video.playsInline = true;
+        video.setAttribute('tabindex', '-1');
+
+        const ui = document.createElement('div');
+        ui.className = 'custom-video-ui';
+        ui.innerHTML = `
+            <button class="video-center-toggle" type="button" aria-label="Play video">
+                <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+                    <path class="video-icon-play" d="M18 13.5 35 24 18 34.5Z"></path>
+                </svg>
+            </button>
+            <div class="video-control-bar">
+                <button class="video-control-button video-toggle" type="button" aria-label="Play video">
+                    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+                        <path class="video-icon-play" d="M11 8.5 23 16 11 23.5Z"></path>
+                        <g class="video-icon-pause"><rect x="9.5" y="8" width="4.5" height="16" rx="1"></rect><rect x="18" y="8" width="4.5" height="16" rx="1"></rect></g>
+                    </svg>
+                </button>
+                <span class="video-time" aria-live="off">
+                    <span class="video-current-time">0:00</span>
+                    <span aria-hidden="true">/</span>
+                    <span class="video-duration">0:00</span>
+                </span>
+                <span class="video-control-spacer"></span>
+                <button class="video-control-button video-mute" type="button" aria-label="Mute video">
+                    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+                        <path class="video-volume-body" d="M7 13h5l6-5v16l-6-5H7Z"></path>
+                        <path class="video-volume-wave" d="M21 12.5c1.6 1.8 1.6 5.2 0 7M24 9.5c3.2 3.5 3.2 9.5 0 13"></path>
+                        <path class="video-volume-muted" d="m21 12 7 8m0-8-7 8"></path>
+                    </svg>
+                </button>
+                <button class="video-control-button video-fullscreen" type="button" aria-label="Enter fullscreen">
+                    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+                        <path d="M7 13V7h6M19 7h6v6M25 19v6h-6M13 25H7v-6"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="video-timeline">
+                <div class="video-timeline-track" aria-hidden="true">
+                    <span class="video-buffered-bar"></span>
+                    <span class="video-played-bar"></span>
+                    <span class="video-timeline-thumb"></span>
+                </div>
+                <input class="video-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Video progress">
+            </div>
+        `;
+        shell.appendChild(ui);
+
+        const centerToggle = ui.querySelector('.video-center-toggle');
+        const toggleButton = ui.querySelector('.video-toggle');
+        const muteButton = ui.querySelector('.video-mute');
+        const fullscreenButton = ui.querySelector('.video-fullscreen');
+        const seek = ui.querySelector('.video-seek');
+        const currentTime = ui.querySelector('.video-current-time');
+        const duration = ui.querySelector('.video-duration');
+        const playedBar = ui.querySelector('.video-played-bar');
+        const bufferedBar = ui.querySelector('.video-buffered-bar');
+        const thumb = ui.querySelector('.video-timeline-thumb');
+        let controlsTimer = 0;
+        let seeking = false;
+
+        const syncState = () => {
+            const total = Number.isFinite(video.duration) ? video.duration : 0;
+            const current = Number.isFinite(video.currentTime) ? video.currentTime : 0;
+            const progressValue = total > 0 ? Math.min(current / total, 1) : 0;
+            const bufferedValue = (() => {
+                if (!total || !video.buffered.length) return 0;
+                try { return Math.min(video.buffered.end(video.buffered.length - 1) / total, 1); }
+                catch (error) { return 0; }
+            })();
+
+            if (!seeking) seek.value = String(Math.round(progressValue * 1000));
+            currentTime.textContent = formatMediaTime(current);
+            duration.textContent = formatMediaTime(total);
+            playedBar.style.transform = `scaleX(${progressValue})`;
+            bufferedBar.style.transform = `scaleX(${bufferedValue})`;
+            thumb.style.left = `${progressValue * 100}%`;
+
+            const playing = !video.paused && !video.ended;
+            shell.classList.toggle('is-playing', playing);
+            shell.classList.toggle('is-muted', video.muted || video.volume === 0);
+            shell.classList.toggle('is-ended', video.ended);
+            toggleButton.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
+            centerToggle.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
+            muteButton.setAttribute('aria-label', video.muted || video.volume === 0 ? 'Unmute video' : 'Mute video');
+        };
+
+        const showControls = (linger = true) => {
+            window.clearTimeout(controlsTimer);
+            shell.classList.remove('is-idle');
+            if (linger && !video.paused) {
+                controlsTimer = window.setTimeout(() => shell.classList.add('is-idle'), 1900);
+            }
+        };
+
+        const togglePlayback = () => {
+            showControls();
+            if (video.paused || video.ended) {
+                const playback = video.play();
+                if (playback && typeof playback.catch === 'function') playback.catch(() => {});
+            } else {
+                video.pause();
+            }
+        };
+
+        const toggleMute = () => {
+            video.muted = !video.muted;
+            syncState();
+            showControls();
+        };
+
+        const fullscreenTarget = options.fullscreenTarget || shell;
+        const toggleFullscreen = async () => {
+            try {
+                if (document.fullscreenElement) await document.exitFullscreen();
+                else if (fullscreenTarget.requestFullscreen) await fullscreenTarget.requestFullscreen();
+            } catch (error) {
+                // Fullscreen support is optional; playback remains available without it.
+            }
+        };
+
+        [ui, centerToggle, toggleButton, muteButton, fullscreenButton, seek].forEach((element) => {
+            element.addEventListener('click', (event) => event.stopPropagation());
+            element.addEventListener('pointerdown', (event) => event.stopPropagation());
+        });
+
+        centerToggle.addEventListener('click', togglePlayback);
+        toggleButton.addEventListener('click', togglePlayback);
+        muteButton.addEventListener('click', toggleMute);
+        fullscreenButton.addEventListener('click', toggleFullscreen);
+        video.addEventListener('click', (event) => {
+            event.stopPropagation();
+            togglePlayback();
+        });
+
+        seek.addEventListener('pointerdown', () => { seeking = true; });
+        seek.addEventListener('input', () => {
+            const total = Number.isFinite(video.duration) ? video.duration : 0;
+            const ratio = Number(seek.value) / 1000;
+            playedBar.style.transform = `scaleX(${ratio})`;
+            thumb.style.left = `${ratio * 100}%`;
+            currentTime.textContent = formatMediaTime(total * ratio);
+        });
+        seek.addEventListener('change', () => {
+            const total = Number.isFinite(video.duration) ? video.duration : 0;
+            if (total > 0) video.currentTime = total * (Number(seek.value) / 1000);
+            seeking = false;
+            syncState();
+            showControls();
+        });
+        seek.addEventListener('pointerup', () => { seeking = false; });
+
+        shell.addEventListener('pointermove', () => showControls());
+        shell.addEventListener('pointerenter', () => showControls(false));
+        shell.addEventListener('pointerleave', () => {
+            if (!video.paused) shell.classList.add('is-idle');
+        });
+        shell.addEventListener('focusin', () => showControls(false));
+        shell.addEventListener('focusout', () => {
+            if (!video.paused) showControls();
+        });
+        shell.addEventListener('keydown', (event) => {
+            if (event.target === seek) return;
+            if (event.key === ' ' || event.key === 'k' || event.key === 'K') {
+                event.preventDefault();
+                togglePlayback();
+            } else if (event.key === 'm' || event.key === 'M') {
+                event.preventDefault();
+                toggleMute();
+            } else if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                video.currentTime = Math.min((video.duration || 0), video.currentTime + 5);
+            } else if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                video.currentTime = Math.max(0, video.currentTime - 5);
+            }
+        });
+
+        ['loadedmetadata', 'durationchange', 'timeupdate', 'progress', 'volumechange', 'play', 'pause', 'ended', 'emptied'].forEach((eventName) => {
+            video.addEventListener(eventName, syncState);
+        });
+        video.addEventListener('play', () => showControls());
+        video.addEventListener('pause', () => showControls(false));
+        document.addEventListener('fullscreenchange', () => {
+            const isFullscreen = document.fullscreenElement === fullscreenTarget;
+            shell.classList.toggle('is-native-fullscreen', isFullscreen);
+            fullscreenButton.setAttribute('aria-label', isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen');
+        });
+
+        const api = {
+            shell,
+            video,
+            sync: syncState,
+            reset: (clearSource = false) => {
+                video.pause();
+                try { video.currentTime = 0; } catch (error) {}
+                if (clearSource) {
+                    video.removeAttribute('src');
+                    video.load();
+                }
+                syncState();
+            },
+            setSource: ({ src, poster = '', caption = '', muted = false, autoplay = false }) => {
+                video.pause();
+                video.muted = muted;
+                video.poster = poster;
+                video.src = src;
+                video.setAttribute('aria-label', caption || 'Video');
+                shell.setAttribute('aria-label', caption || 'Video player');
+                video.load();
+                syncState();
+                if (autoplay) {
+                    const playback = video.play();
+                    if (playback && typeof playback.catch === 'function') playback.catch(() => {});
+                }
+            }
+        };
+
+        video.customPlayerApi = api;
+        syncState();
+        return api;
+    };
+
+    const inlineVideoPlayers = new Map();
+    document.querySelectorAll('.page-project .gallery-item video').forEach((video) => {
+        const api = createCustomVideoPlayer(video);
+        if (!api) return;
+        inlineVideoPlayers.set(video, api);
+        video.closest('.gallery-item')?.classList.add('has-custom-video');
+    });
+
     // Immersive project pages: mixed image/video viewer, zoom for images,
     // keyboard navigation and swipe gestures.
     if (body.classList.contains('page-project')) {
@@ -235,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="viewer-stage">
                     <div class="viewer-image-wrap">
                         <img class="viewer-image" alt="" hidden>
-                        <video class="viewer-video" controls playsinline preload="metadata" hidden></video>
+                        <video class="viewer-video" playsinline preload="metadata" hidden></video>
                     </div>
                 </div>
                 <button class="viewer-arrow viewer-next" type="button" aria-label="Next frame">→</button>
@@ -251,6 +511,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const viewerImage = viewer.querySelector('.viewer-image');
             const viewerVideo = viewer.querySelector('.viewer-video');
             const viewerImageWrap = viewer.querySelector('.viewer-image-wrap');
+            const viewerVideoPlayer = createCustomVideoPlayer(viewerVideo, { viewer: true, fullscreenTarget: viewer });
+            viewerVideo.hidden = false;
+            viewerVideoPlayer.shell.hidden = true;
             const viewerIndex = viewer.querySelector('.viewer-index');
             const viewerCaption = viewer.querySelector('.viewer-caption');
             const viewerProgress = viewer.querySelector('.viewer-progress span');
@@ -290,8 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             const stopViewerVideo = () => {
-                viewerVideo.pause();
-                viewerVideo.currentTime = 0;
+                viewerVideoPlayer.reset();
             };
 
             const finishTransition = (width, height) => {
@@ -318,14 +580,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (activeIsVideo) {
                         viewerImage.hidden = true;
-                        viewerVideo.hidden = false;
-                        viewerVideo.poster = source.getAttribute('poster') || '';
-                        viewerVideo.src = getMediaSource(source);
-                        viewerVideo.setAttribute('aria-label', caption);
-                        viewerVideo.load();
+                        viewerVideoPlayer.shell.hidden = false;
+                        viewerVideoPlayer.setSource({
+                            src: getMediaSource(source),
+                            poster: source.getAttribute('poster') || '',
+                            caption,
+                            muted: source.muted,
+                            autoplay: true
+                        });
                         if (viewerVideo.readyState >= 1) finishTransition(viewerVideo.videoWidth, viewerVideo.videoHeight);
                     } else {
-                        viewerVideo.hidden = true;
+                        viewerVideoPlayer.shell.hidden = true;
                         viewerImage.hidden = false;
                         viewerImage.src = getMediaSource(source);
                         viewerImage.alt = caption;
@@ -365,10 +630,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const showPrev = () => renderFrame(activeIndex - 1, -1);
 
             mediaEntries.forEach(({ item, media }, index) => {
+                if (media instanceof HTMLVideoElement) {
+                    item.classList.remove('gallery-view-trigger');
+                    item.removeAttribute('role');
+                    item.removeAttribute('tabindex');
+                    item.setAttribute('aria-label', `Video ${index + 1}`);
+                    return;
+                }
+
                 item.classList.add('gallery-view-trigger');
                 item.tabIndex = 0;
                 item.setAttribute('role', 'button');
-                item.setAttribute('aria-label', `Open ${media instanceof HTMLVideoElement ? 'video' : 'frame'} ${index + 1} in fullscreen`);
+                item.setAttribute('aria-label', `Open frame ${index + 1} in fullscreen`);
                 item.addEventListener('click', () => {
                     if (!item.classList.contains('media-missing')) openViewer(index);
                 });
@@ -394,9 +667,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (event.target === viewer.querySelector('.viewer-stage')) closeViewer();
             });
 
-            viewer.addEventListener('pointerdown', (event) => { touchStartX = event.clientX; }, { passive: true });
+            viewer.addEventListener('pointerdown', (event) => {
+                touchStartX = event.target.closest('.custom-video-player') ? null : event.clientX;
+            }, { passive: true });
             viewer.addEventListener('pointerup', (event) => {
-                if (viewer.classList.contains('is-zoomed')) return;
+                if (viewer.classList.contains('is-zoomed') || touchStartX === null) return;
                 const distance = event.clientX - touchStartX;
                 if (Math.abs(distance) < 55) return;
                 distance < 0 ? showNext() : showPrev();
@@ -404,7 +679,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             document.addEventListener('keydown', (event) => {
                 if (!viewer.classList.contains('is-open')) return;
-                if (event.key === 'Escape') closeViewer();
+                if (event.key === 'Escape') {
+                    closeViewer();
+                    return;
+                }
+                if (event.target.closest('.custom-video-player')) return;
                 if (event.key === 'ArrowRight') showNext();
                 if (event.key === 'ArrowLeft') showPrev();
             });
@@ -463,7 +742,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.documentElement.addEventListener('mouseleave', () => cursor.classList.remove('is-visible'));
 
-        const interactiveSelector = 'a, button, .work-card, .gallery-view-trigger, .viewer-image, .viewer-video';
+        const interactiveSelector = 'a, button, .work-card, .gallery-view-trigger, .viewer-image, .custom-video-player, .video-seek';
         document.querySelectorAll(interactiveSelector).forEach((element) => {
             element.addEventListener('pointerenter', () => {
                 isInteractive = true;
