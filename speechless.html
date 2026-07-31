@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Speechless — Madina Ganieva</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./src/style.css" rel="stylesheet" />
+
+    <style>
+      :root {
+        --bg: #f1f1f1;
+        --text: #1d0000;
+        --accent: #8f0000;
+        --white: #f1f1f1;
+        --content-width: 1554px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Poppins", sans-serif;
+        overflow-x: hidden;
+      }
+
+      .page {
+        min-height: 100vh;
+        background: var(--bg);
+      }
+
+      .container-custom {
+        width: min(100%, 1920px);
+        margin: 0 auto;
+        padding-left: clamp(20px, 5vw, 160px);
+        padding-right: clamp(20px, 5vw, 160px);
+        padding-top: clamp(28px, 4.6vw, 88px);
+        padding-bottom: clamp(32px, 5vw, 80px);
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: clamp(48px, 6vw, 96px);
+      }
+
+      .brand {
+        position: relative;
+        z-index: 20;
+        color: var(--text);
+        font-family: "Forum", serif;
+        font-size: clamp(40px, 4vw, 64px);
+        font-weight: 400;
+        line-height: 1.1;
+        text-decoration: none;
+      }
+
+      .nav-desktop {
+        display: flex;
+        align-items: center;
+        gap: clamp(20px, 2vw, 46px);
+      }
+
+      .nav-desktop a {
+        color: var(--text);
+        font-size: clamp(18px, 2vw, 40px);
+        font-weight: 400;
+        line-height: 1.2;
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .nav-desktop a:hover {
+        color: var(--accent);
+      }
+
+      .project-wrap {
+        max-width: var(--content-width);
+        margin: 0 auto;
+      }
+
+      .project-title {
+        margin: 0 0 18px;
+        color: var(--accent);
+        font-family: "Forum", serif;
+        font-size: 48px;
+        font-weight: 400;
+        line-height: 1.154;
+      }
+
+      .project-text {
+        max-width: 1554px;
+        margin: 0 0 80px;
+        color: var(--text);
+        font-size: 24px;
+        line-height: 1.24;
+        letter-spacing: 0.05em;
+      }
+
+      .gallery {
+        display: flex;
+        flex-direction: column;
+        gap: 104px;
+      }
+
+      .gallery-item {
+        width: 100%;
+      }
+
+      .gallery-item img,
+      .gallery-item video {
+        display: block;
+        width: 100%;
+        height: auto;
+        background: #e7e7e7;
+      }
+
+      @media (max-width: 991.98px) {
+        .project-title {
+          font-size: 42px;
+        }
+
+        .project-text {
+          margin-bottom: 48px;
+          font-size: 18px;
+        }
+
+        .gallery {
+          gap: 36px;
+        }
+      }
+
+      @media (max-width: 428px) {
+        .container-custom {
+          width: 100%;
+          padding: 35px 51px 32px 48px;
+        }
+
+        .topbar {
+          margin-bottom: 54px;
+        }
+
+        .brand {
+          font-size: 40px;
+          line-height: 44px;
+        }
+
+        .project-wrap {
+          max-width: 328px;
+          margin: 0;
+        }
+
+        .project-title {
+          margin: 0 0 10px;
+          font-size: 24px;
+          line-height: 1.16;
+        }
+
+        .project-text {
+          max-width: 328px;
+          margin: 0 0 26px;
+          font-size: 12px;
+          line-height: 1.16;
+          letter-spacing: 0.05em;
+        }
+
+        .gallery {
+          gap: 16px;
+        }
+
+        .gallery-item img,
+        .gallery-item video {
+          width: 328px;
+          max-width: 100%;
+          margin: 0;
+        }
+      }
+    </style>
+
+    <link href="./src/enhancements.css" rel="stylesheet" />
+    <link rel="icon" href="./src/favicon.svg" type="image/svg+xml" />
+  </head>
+
+  <!--
+    COPY THIS FILE, RENAME IT, THEN REPLACE:
+    1. data-project-number — article number, for example 05.
+    2. data-next-project-url — next article file. Leave empty to hide the NEXT PROJECT link.
+    3. data-next-project-title — visible name of the next article.
+    4. PROJECT TITLE, PROJECT DESCRIPTION and image paths below.
+-->
+  <body
+    class="page-project"
+    data-project-number="11"
+    data-next-project-url=""
+    data-next-project-title=""
+  >
+    <main class="page">
+      <div class="container-custom">
+        <header class="topbar">
+          <a href="index.html" class="brand">MG</a>
+
+          <nav class="nav-desktop">
+            <a href="work.html">WORK</a>
+            <a href="about.html">ABOUT</a>
+          </nav>
+
+          <button class="burger" type="button" aria-label="Open menu">
+            <span></span>
+            <span></span>
+          </button>
+        </header>
+
+        <section class="project-wrap">
+          <h1 class="project-title">Speechless</h1>
+
+          <div class="project-text">
+            "Speechless" examines the tension between permanence and change
+            through a series of photographs captured in a Soviet-era residential
+            environment set against a dramatic natural landscape. The project
+            contrasts the rigid geometry of the apartment buildings with the
+            openness of the surrounding mountains, creating a dialogue between
+            human intervention and nature. The title refers to the moments that
+            resist explanation — experiences, memories, and emotions that remain
+            unspoken yet continue to shape our connection to place.
+          </div>
+
+          <section class="gallery">
+            <div class="gallery-item">
+              <img
+                src="./src/speechless/speechless1.jpg"
+                alt="Speechless image 1"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <div class="gallery-item">
+              <img
+                src="./src/speechless/speechless2.jpg"
+                alt="Speechless project image 2"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <div class="gallery-item">
+              <img
+                src="./src/speechless/speechless3.jpg"
+                alt="Speechless project image 3"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <div class="gallery-item">
+              <img
+                src="./src/speechless/speechless4.jpg"
+                alt="Speechless project image 4"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <div class="gallery-item">
+              <img
+                src="./src/speechless/speechless5.jpg"
+                alt="Speechless project image 5"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <div class="gallery-item">
+              <img
+                src="./src/speechless/speechless6.jpg"
+                alt="Speechless project image 6"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <div class="gallery-item">
+              <img
+                src="./src/speechless/speechless7.jpg"
+                alt="Speechless project image 7"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-menu-inner">
+        <div class="mobile-menu-top">
+          <a href="index.html" class="mobile-brand">MG</a>
+        </div>
+
+        <nav class="mobile-nav">
+          <a href="work.html">WORK</a>
+          <a href="about.html">ABOUT</a>
+        </nav>
+      </div>
+    </div>
+
+    <script src="./src/script.js"></script>
+  </body>
+</html>
