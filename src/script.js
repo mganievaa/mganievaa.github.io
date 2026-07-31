@@ -671,10 +671,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 touchStartX = event.target.closest('.custom-video-player') ? null : event.clientX;
             }, { passive: true });
             viewer.addEventListener('pointerup', (event) => {
-                if (viewer.classList.contains('is-zoomed') || touchStartX === null) return;
+                // Controls inside the custom video player must never be interpreted
+                // as gallery swipe navigation. Otherwise a mute/fullscreen click can
+                // re-render the same video and reset playback to 0:00.
+                if (event.target.closest('.custom-video-player')) {
+                    touchStartX = null;
+                    return;
+                }
+
+                if (viewer.classList.contains('is-zoomed') || touchStartX === null) {
+                    touchStartX = null;
+                    return;
+                }
+
                 const distance = event.clientX - touchStartX;
+                touchStartX = null;
                 if (Math.abs(distance) < 55) return;
                 distance < 0 ? showNext() : showPrev();
+            }, { passive: true });
+
+            viewer.addEventListener('pointercancel', () => {
+                touchStartX = null;
             }, { passive: true });
 
             document.addEventListener('keydown', (event) => {

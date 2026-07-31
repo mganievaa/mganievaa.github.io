@@ -2598,3 +2598,73 @@ body.viewer-open .modern-cursor-dot {
         max-width: none;
     }
 }
+
+/* Video gallery layout: every video occupies its own centered row and is limited by height. */
+.page-project .gallery.editorial-gallery > .gallery-item.has-custom-video,
+.page-project .gallery > .gallery-item.has-custom-video {
+    grid-column: 1 / -1 !important;
+    justify-self: stretch !important;
+    align-self: start !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    width: 100% !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+}
+
+.page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player {
+    display: inline-block;
+    width: fit-content;
+    max-width: min(100%, 1120px);
+    max-height: min(68vh, 680px);
+    margin-inline: auto;
+}
+
+.page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player video {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(100%, 1120px);
+    max-height: min(68vh, 680px);
+    object-fit: contain;
+}
+
+/* Keep the player and its controls unrestricted in native fullscreen. */
+.page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player:fullscreen,
+.page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player.is-native-fullscreen {
+    width: 100vw;
+    max-width: none;
+    height: 100vh;
+    max-height: none;
+}
+
+.page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player:fullscreen video,
+.page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player.is-native-fullscreen video {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+}
+
+@media (max-width: 1199.98px) {
+    .page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player,
+    .page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player video {
+        max-width: min(100%, 960px);
+        max-height: min(64vh, 580px);
+    }
+}
+
+@media (max-width: 767.98px) {
+    .page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player {
+        width: fit-content;
+        max-width: 100%;
+        max-height: min(58vh, 440px);
+    }
+
+    .page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player video {
+        width: auto;
+        max-width: 100%;
+        max-height: min(58vh, 440px);
+    }
+}
