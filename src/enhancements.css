@@ -2566,3 +2566,35 @@ body.viewer-open .modern-cursor-dot {
         transition-duration: .01ms !important;
     }
 }
+
+/* Fixed desktop size for embedded project videos. */
+.page-project .gallery-item.has-custom-video {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player {
+    width: min(100%, 1120px);
+    max-width: 1120px;
+    margin-inline: auto;
+}
+
+@media (min-width: 1600px) {
+    .page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player {
+        width: 1120px;
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player {
+        width: min(100%, 960px);
+    }
+}
+
+@media (max-width: 767.98px) {
+    .page-project .gallery-item.has-custom-video > .custom-video-player.is-gallery-player {
+        width: 100%;
+        max-width: none;
+    }
+}
