@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scape Content Creator - Madina Ganieva</title>
+    <title>Scape Content Creation - Madina Ganieva</title>
 
     <link
       href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@400;500&display=swap"
@@ -108,10 +108,24 @@
       }
 
       .gallery {
-        display: flex;
-        flex-direction: column;
-        gap: 104px;
-      }
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.gallery-item {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.gallery-item video {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
 
       .gallery-item {
         width: 100%;
@@ -125,10 +139,20 @@
         background: #e7e7e7;
       }
 
-      @media (max-width: 991.98px) {
-        .project-title {
-          font-size: 42px;
-        }
+      @media (max-width: 600px) {
+    .gallery {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .gallery-item {
+        width: 100%;
+    }
+
+    .gallery-item video {
+        width: 100%;
+    }
+}
 
         .project-text {
           font-size: 18px;
