@@ -10,7 +10,6 @@
       rel="stylesheet"
     />
     <link href="./src/style.css" rel="stylesheet" />
-    <link href="./src/enhancements.css" rel="stylesheet" />
     <style>
       :root {
         --bg: #f1f1f1;
@@ -108,58 +107,6 @@
         color: var(--text);
       }
 
-      .gallery {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        gap: 24px;
-        width: 100%;
-        align-items: flex-start;
-      }
-
-      .gallery-item {
-        flex: 1 1 0;
-        width: 0;
-        min-width: 0;
-      }
-
-      .gallery-item video {
-        display: block;
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-        object-fit: contain;
-        background: #e7e7e7;
-      }
-
-      @media (max-width: 991.98px) {
-        .project-title {
-          font-size: 42px;
-        }
-
-        .project-text {
-          font-size: 18px;
-          margin-bottom: 48px;
-        }
-      }
-
-      @media (max-width: 600px) {
-        .gallery {
-          flex-direction: column;
-          gap: 16px;
-        }
-
-        .gallery-item {
-          width: 100%;
-          flex: none;
-        }
-
-        .gallery-item video {
-          width: 100%;
-          max-width: 100%;
-        }
-      }
-
       @media (max-width: 428px) {
         .container-custom {
           width: 100%;
@@ -197,14 +144,74 @@
           margin: 0 0 26px 0;
         }
 
-        .gallery {
-          gap: 16px;
-        }
+      }
+    </style>
+    <link href="./src/enhancements.css" rel="stylesheet" />
 
-        .gallery-item video {
-          width: 100%;
-          max-width: 100%;
-          margin: 0;
+    <style>
+      /* Scape Content Creator only: keep the three videos in one row on desktop. */
+      .project-scape-cc .gallery,
+      .project-scape-cc .gallery.editorial-gallery {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        grid-auto-flow: row !important;
+        column-gap: 24px !important;
+        row-gap: 24px !important;
+        align-items: start !important;
+      }
+
+      .project-scape-cc .gallery > .gallery-item,
+      .project-scape-cc .gallery.editorial-gallery > .gallery-item,
+      .project-scape-cc .gallery > .gallery-item.has-custom-video,
+      .project-scape-cc .gallery.editorial-gallery > .gallery-item.has-custom-video {
+        grid-column: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        justify-self: stretch !important;
+        align-self: start !important;
+        overflow: hidden !important;
+      }
+
+      .project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: none !important;
+        margin: 0 !important;
+      }
+
+      .project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player video,
+      .project-scape-cc .gallery-item video {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        object-fit: contain !important;
+      }
+
+      .project-scape-cc .gallery-item::before {
+        display: none !important;
+        content: none !important;
+      }
+
+      @media (max-width: 900px) {
+        .project-scape-cc .gallery,
+        .project-scape-cc .gallery.editorial-gallery {
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          column-gap: 14px !important;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .project-scape-cc .gallery,
+        .project-scape-cc .gallery.editorial-gallery {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          gap: 24px !important;
         }
       }
     </style>
@@ -235,7 +242,7 @@
           <h1 class="project-title">Scape Content Creation</h1>
 
           <div class="project-text">
-            Two years ago, I joined Scape Australia as a Content Creator, producing social media content for its student accommodation communities. Over the course of the role, I created more than 10 short-form videos, with two reaching over 6 million views on Instagram. The work ranged from relaxed TikTok trends and community-focused content to more creative, transition-driven videos, adapting different formats and visual approaches while maintaining Scape’s brand identity and tone. This experience allowed me to develop my skills in filming, editing, visual storytelling, and creating content designed specifically for social media audiences. This selection showcases three of my favourite videos from the role.
+            Two years ago, I joined Scape as a Content Creator, producing social media content for its student accommodation communities. Over the course of the role, I created more than 10 short-form videos, with two reaching over 6 million views on Instagram. The work ranged from relaxed TikTok trends and community-focused content to more creative, transition-driven videos, adapting different formats and visual approaches while maintaining Scape’s brand identity and tone. This experience allowed me to develop my skills in filming, editing, visual storytelling, and creating content designed specifically for social media audiences. This selection showcases three of my favourite videos from the role.
           </div>
 
           <section class="gallery">
@@ -276,3 +283,4 @@
     <script src="./src/script.js"></script>
   </body>
 </html>
+
