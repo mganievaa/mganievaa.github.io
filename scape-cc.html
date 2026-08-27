@@ -10,6 +10,7 @@
       rel="stylesheet"
     />
     <link href="./src/style.css" rel="stylesheet" />
+    <link href="./src/enhancements.css" rel="stylesheet" />
     <style>
       :root {
         --bg: #f1f1f1;
@@ -108,59 +109,54 @@
       }
 
       .gallery {
-    display: flex;
-    flex-direction: row;
-    gap: 24px;
-    width: 100%;
-    align-items: flex-start;
-}
-
-.gallery-item {
-    flex: 1 1 0;
-    min-width: 0;
-}
-
-.gallery-item video {
-    display: block;
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-}
-
-      .gallery-item {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 24px;
         width: 100%;
+        align-items: flex-start;
       }
 
-      .gallery-item img,
+      .gallery-item {
+        flex: 1 1 0;
+        width: 0;
+        min-width: 0;
+      }
+
       .gallery-item video {
-        width: 100%;
-        height: auto;
         display: block;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
         background: #e7e7e7;
       }
 
-      @media (max-width: 600px) {
-    .gallery {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .gallery-item {
-        width: 100%;
-    }
-
-    .gallery-item video {
-        width: 100%;
-    }
-}
+      @media (max-width: 991.98px) {
+        .project-title {
+          font-size: 42px;
+        }
 
         .project-text {
           font-size: 18px;
           margin-bottom: 48px;
         }
+      }
 
+      @media (max-width: 600px) {
         .gallery {
-          gap: 36px;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .gallery-item {
+          width: 100%;
+          flex: none;
+        }
+
+        .gallery-item video {
+          width: 100%;
+          max-width: 100%;
         }
       }
 
@@ -205,19 +201,17 @@
           gap: 16px;
         }
 
-        .gallery-item img,
-      .gallery-item video {
-          width: 328px;
+        .gallery-item video {
+          width: 100%;
           max-width: 100%;
           margin: 0;
         }
       }
     </style>
-    <link href="./src/enhancements.css" rel="stylesheet" />
     <link rel="icon" href="./src/favicon.svg" type="image/svg+xml" />
   </head>
 
-  <body class="page-project"
+  <body class="page-project project-scape-cc"
     data-project-number="9"
     data-next-project-url=""
     data-next-project-title="">
@@ -241,7 +235,7 @@
           <h1 class="project-title">Scape Content Creation</h1>
 
           <div class="project-text">
-            Two years ago, I joined Scape as a Content Creator, producing social media content for its student accommodation communities. Over the course of the role, I created more than 10 short-form videos, with two reaching over 6 million views on Instagram. The work ranged from relaxed TikTok trends and community-focused content to more creative, transition-driven videos, adapting different formats and visual approaches while maintaining Scape’s brand identity and tone. This experience allowed me to develop my skills in filming, editing, visual storytelling, and creating content designed specifically for social media audiences. This selection showcases three of my favourite videos from the role.
+            Two years ago, I joined Scape Australia as a Content Creator, producing social media content for its student accommodation communities. Over the course of the role, I created more than 10 short-form videos, with two reaching over 6 million views on Instagram. The work ranged from relaxed TikTok trends and community-focused content to more creative, transition-driven videos, adapting different formats and visual approaches while maintaining Scape’s brand identity and tone. This experience allowed me to develop my skills in filming, editing, visual storytelling, and creating content designed specifically for social media audiences. This selection showcases three of my favourite videos from the role.
           </div>
 
           <section class="gallery">
