@@ -216,6 +216,107 @@
       }
     </style>
     <link rel="icon" href="./src/favicon.svg" type="image/svg+xml" />
+
+    <style>
+      /* Final Scape-only layout lock.
+         This comes after enhancements.css and overrides the JS-added video classes
+         without changing any other project page. */
+      body.project-scape-cc .gallery,
+      body.project-scape-cc .gallery.editorial-gallery {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        grid-template-rows: auto !important;
+        grid-auto-flow: column !important;
+        gap: clamp(16px, 2vw, 28px) !important;
+        width: 100% !important;
+        align-items: start !important;
+      }
+
+      body.project-scape-cc .gallery > .gallery-item,
+      body.project-scape-cc .gallery.editorial-gallery > .gallery-item,
+      body.project-scape-cc .gallery > .gallery-item.has-custom-video,
+      body.project-scape-cc .gallery.editorial-gallery > .gallery-item.has-custom-video {
+        grid-row: 1 !important;
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        align-self: start !important;
+        justify-self: stretch !important;
+        overflow: visible !important;
+      }
+
+      body.project-scape-cc .gallery > .gallery-item:nth-child(1) {
+        grid-column: 1 !important;
+      }
+
+      body.project-scape-cc .gallery > .gallery-item:nth-child(2) {
+        grid-column: 2 !important;
+      }
+
+      body.project-scape-cc .gallery > .gallery-item:nth-child(3) {
+        grid-column: 3 !important;
+      }
+
+      body.project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player,
+      body.project-scape-cc .gallery-item > .custom-video-player {
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+        max-height: none !important;
+        aspect-ratio: 9 / 16 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+      }
+
+      body.project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player video,
+      body.project-scape-cc .gallery-item > .custom-video-player video,
+      body.project-scape-cc .gallery-item > video {
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: 100% !important;
+        max-height: none !important;
+        aspect-ratio: 9 / 16 !important;
+        object-fit: cover !important;
+        margin: 0 !important;
+      }
+
+      body.project-scape-cc .gallery-item::before,
+      body.project-scape-cc .gallery-item::after {
+        display: none !important;
+        content: none !important;
+      }
+
+      /* Keep all three beside each other on normal desktop/tablet widths. */
+      @media (min-width: 701px) {
+        body.project-scape-cc .gallery,
+        body.project-scape-cc .gallery.editorial-gallery {
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+      }
+
+      /* Stack only on narrow phones. */
+      @media (max-width: 700px) {
+        body.project-scape-cc .gallery,
+        body.project-scape-cc .gallery.editorial-gallery {
+          grid-template-columns: 1fr !important;
+          grid-template-rows: repeat(3, auto) !important;
+          grid-auto-flow: row !important;
+          gap: 24px !important;
+        }
+
+        body.project-scape-cc .gallery > .gallery-item:nth-child(1),
+        body.project-scape-cc .gallery > .gallery-item:nth-child(2),
+        body.project-scape-cc .gallery > .gallery-item:nth-child(3) {
+          grid-column: 1 !important;
+          grid-row: auto !important;
+        }
+      }
+    </style>
   </head>
 
   <body class="page-project project-scape-cc"
