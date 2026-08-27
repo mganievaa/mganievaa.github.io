@@ -16,13 +16,6 @@ selection of branding, editorial, packaging, and digital media projects.
 The portfolio is designed as a visual archive of selected work rather than a public
 template or reusable website theme.
 
-## Selected work
-
-- **Bahoré** — event branding and visual identity
-- **Dark Matter** — speculative packaging and information design
-- **Kazimir** — editorial and typographic project
-- **Lionel** — brand identity and visual communication
-
 ## Credits
 
 **Portfolio owner, designer, and content creator**  
