@@ -317,6 +317,71 @@
         }
       }
     </style>
+
+    <style>
+      /* Scape-only poster + fullscreen corrections. */
+      body.project-scape-cc .gallery-item > .custom-video-player,
+      body.project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player {
+        position: relative !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-size: cover !important;
+      }
+
+      body.project-scape-cc .gallery > .gallery-item:nth-child(1) > .custom-video-player,
+      body.project-scape-cc .gallery > .gallery-item:nth-child(1).has-custom-video > .custom-video-player.is-gallery-player {
+        background-image: url("./src/scape-cc/scape-cc1-poster.png") !important;
+      }
+
+      body.project-scape-cc .gallery > .gallery-item:nth-child(2) > .custom-video-player,
+      body.project-scape-cc .gallery > .gallery-item:nth-child(2).has-custom-video > .custom-video-player.is-gallery-player {
+        background-image: url("./src/scape-cc/scape-cc2-poster.png") !important;
+      }
+
+      body.project-scape-cc .gallery > .gallery-item:nth-child(3) > .custom-video-player,
+      body.project-scape-cc .gallery > .gallery-item:nth-child(3).has-custom-video > .custom-video-player.is-gallery-player {
+        background-image: url("./src/scape-cc/scape-cc3-poster.png") !important;
+      }
+
+      /* Before first playback, reveal the wrapper poster instead of the black video surface. */
+      body.project-scape-cc .custom-video-player:not(.scape-has-started) video {
+        opacity: 0 !important;
+      }
+
+      body.project-scape-cc .custom-video-player.scape-has-started video {
+        opacity: 1 !important;
+      }
+
+      /* Fullscreen stays portrait. The fullscreen wrapper may fill the viewport, but the video does not. */
+      body.project-scape-cc .custom-video-player:fullscreen,
+      body.project-scape-cc .custom-video-player.is-native-fullscreen,
+      body.project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player:fullscreen,
+      body.project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player.is-native-fullscreen {
+        width: 100vw !important;
+        max-width: none !important;
+        height: 100vh !important;
+        max-height: none !important;
+        aspect-ratio: auto !important;
+        display: grid !important;
+        place-items: center !important;
+        overflow: hidden !important;
+        background-color: #100000 !important;
+        background-size: contain !important;
+      }
+
+      body.project-scape-cc .custom-video-player:fullscreen video,
+      body.project-scape-cc .custom-video-player.is-native-fullscreen video,
+      body.project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player:fullscreen video,
+      body.project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player.is-native-fullscreen video {
+        width: auto !important;
+        height: 100vh !important;
+        max-width: min(100vw, 56.25vh) !important;
+        max-height: 100vh !important;
+        aspect-ratio: 9 / 16 !important;
+        object-fit: contain !important;
+        margin: auto !important;
+      }
+    </style>
   </head>
 
   <body class="page-project project-scape-cc"
@@ -348,19 +413,19 @@
 
           <section class="gallery">
             <div class="gallery-item">
-              <video controls width="100%" poster="./src/scape-cc/scape-cc1-poster.png">
+              <video controls width="100%" preload="none" playsinline poster="./src/scape-cc/scape-cc1-poster.png">
                 <source src="./src/scape-cc/scape-cc1.mp4" type="video/mp4" />
               </video>
             </div>
 
             <div class="gallery-item">
-              <video controls width="100%" poster="./src/scape-cc/scape-cc2-poster.png">
+              <video controls width="100%" preload="none" playsinline poster="./src/scape-cc/scape-cc2-poster.png">
                 <source src="./src/scape-cc/scape-cc2.mp4" type="video/mp4" />
               </video>
             </div>
 
             <div class="gallery-item">
-              <video controls width="100%" poster="./src/scape-cc/scape-cc3-poster.png">
+              <video controls width="100%" preload="none" playsinline poster="./src/scape-cc/scape-cc3-poster.png">
                 <source src="./src/scape-cc/scape-cc3.mp4" type="video/mp4" />
               </video>
             </div>
@@ -382,6 +447,38 @@
     </div>
 
     <script src="./src/script.js"></script>
+    <script>
+      (() => {
+        const wireScapeVideos = () => {
+          document.querySelectorAll('body.project-scape-cc .custom-video-player video').forEach((video) => {
+            if (video.dataset.scapePosterWired) return;
+            video.dataset.scapePosterWired = 'true';
+            const player = video.closest('.custom-video-player');
+            if (!player) return;
+
+            // Re-assert the original poster after the site's custom-player script runs.
+            const item = player.closest('.gallery-item');
+            const items = Array.from(document.querySelectorAll('body.project-scape-cc .gallery > .gallery-item'));
+            const index = items.indexOf(item) + 1;
+            if (index >= 1 && index <= 3) {
+              video.setAttribute('poster', `./src/scape-cc/scape-cc${index}-poster.png`);
+              video.setAttribute('preload', 'none');
+              video.setAttribute('playsinline', '');
+            }
+
+            video.addEventListener('play', () => player.classList.add('scape-has-started'));
+            video.addEventListener('ended', () => {
+              player.classList.remove('scape-has-started');
+              video.currentTime = 0;
+            });
+          });
+        };
+
+        wireScapeVideos();
+        new MutationObserver(wireScapeVideos).observe(document.body, { childList: true, subtree: true });
+      })();
+    </script>
+
   </body>
 </html>
 
