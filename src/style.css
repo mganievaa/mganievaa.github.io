@@ -131,3 +131,213 @@ body.menu-open{
         line-height:72px;
     }
 }
+/* =========================================================
+   2026-08 layout patch
+   - Scape CC responsive video wrapping
+   - mobile burger follows the document flow instead of viewport
+   - About composition avoids text/photo collisions
+   ========================================================= */
+
+/* Scape Content Creation: responsive, centered portrait-video rows.
+   Flex wrapping intentionally gives 3 -> 2+1 -> 1+1+1 as space decreases. */
+body.page-project.project-scape-cc main.page .project-wrap > .gallery,
+body.page-project.project-scape-cc main.page .project-wrap > .gallery.editorial-gallery {
+    --scape-video-basis: 300px;
+    --scape-video-max-width: 405px;
+    --scape-video-max-height: 720px;
+    display: flex !important;
+    flex-flow: row wrap !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    gap: clamp(18px, 2vw, 28px) !important;
+    width: 100% !important;
+}
+
+body.page-project.project-scape-cc main.page .project-wrap > .gallery > .gallery-item,
+body.page-project.project-scape-cc main.page .project-wrap > .gallery.editorial-gallery > .gallery-item,
+body.page-project.project-scape-cc main.page .project-wrap > .gallery > .gallery-item.has-custom-video,
+body.page-project.project-scape-cc main.page .project-wrap > .gallery.editorial-gallery > .gallery-item.has-custom-video {
+    flex: 1 1 var(--scape-video-basis) !important;
+    width: auto !important;
+    max-width: var(--scape-video-max-width) !important;
+    min-width: min(100%, 260px) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    overflow: visible !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+}
+
+body.page-project.project-scape-cc main.page .project-wrap .gallery-item > .custom-video-player,
+body.page-project.project-scape-cc main.page .project-wrap .gallery-item.has-custom-video > .custom-video-player.is-gallery-player {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: var(--scape-video-max-width) !important;
+    height: auto !important;
+    max-height: var(--scape-video-max-height) !important;
+    aspect-ratio: 9 / 16 !important;
+    margin: 0 auto !important;
+    overflow: hidden !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+}
+
+body.page-project.project-scape-cc main.page .project-wrap .gallery-item > .custom-video-player video,
+body.page-project.project-scape-cc main.page .project-wrap .gallery-item.has-custom-video > .custom-video-player.is-gallery-player video,
+body.page-project.project-scape-cc main.page .project-wrap .gallery-item > video {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: var(--scape-video-max-height) !important;
+    aspect-ratio: 9 / 16 !important;
+    object-fit: cover !important;
+    margin: 0 !important;
+}
+
+body.page-project.project-scape-cc main.page .project-wrap .gallery-item::before,
+body.page-project.project-scape-cc main.page .project-wrap .gallery-item::after {
+    display: none !important;
+    content: none !important;
+}
+
+body.page-project.project-scape-cc main.page .project-wrap .gallery > .gallery-item:nth-child(1) > .custom-video-player,
+body.page-project.project-scape-cc main.page .project-wrap .gallery > .gallery-item:nth-child(1).has-custom-video > .custom-video-player.is-gallery-player {
+    background-image: url("./scape-cc/scape-cc1-poster.png") !important;
+}
+
+body.page-project.project-scape-cc main.page .project-wrap .gallery > .gallery-item:nth-child(2) > .custom-video-player,
+body.page-project.project-scape-cc main.page .project-wrap .gallery > .gallery-item:nth-child(2).has-custom-video > .custom-video-player.is-gallery-player {
+    background-image: url("./scape-cc/scape-cc2-poster.png") !important;
+}
+
+body.page-project.project-scape-cc main.page .project-wrap .gallery > .gallery-item:nth-child(3) > .custom-video-player,
+body.page-project.project-scape-cc main.page .project-wrap .gallery > .gallery-item:nth-child(3).has-custom-video > .custom-video-player.is-gallery-player {
+    background-image: url("./scape-cc/scape-cc3-poster.png") !important;
+}
+
+/* Before the first playback, show the poster on the custom-player wrapper. */
+body.page-project.project-scape-cc .custom-video-player:not(.scape-has-started) video {
+    opacity: 0 !important;
+}
+
+body.page-project.project-scape-cc .custom-video-player.scape-has-started video {
+    opacity: 1 !important;
+}
+
+/* Native fullscreen is exempt from the gallery size cap. */
+body.page-project.project-scape-cc .custom-video-player:fullscreen,
+body.page-project.project-scape-cc .custom-video-player.is-native-fullscreen,
+body.page-project.project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player:fullscreen,
+body.page-project.project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player.is-native-fullscreen {
+    width: 100vw !important;
+    max-width: none !important;
+    height: 100vh !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    display: grid !important;
+    place-items: center !important;
+    overflow: hidden !important;
+    background-color: #100000 !important;
+    background-size: contain !important;
+}
+
+body.page-project.project-scape-cc .custom-video-player:fullscreen video,
+body.page-project.project-scape-cc .custom-video-player.is-native-fullscreen video,
+body.page-project.project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player:fullscreen video,
+body.page-project.project-scape-cc .gallery-item.has-custom-video > .custom-video-player.is-gallery-player.is-native-fullscreen video {
+    width: auto !important;
+    height: 100vh !important;
+    max-width: min(100vw, 56.25vh) !important;
+    max-height: 100vh !important;
+    aspect-ratio: 9 / 16 !important;
+    object-fit: contain !important;
+    margin: auto !important;
+}
+
+@media (max-width: 760px) {
+    body.page-project.project-scape-cc main.page .project-wrap > .gallery,
+    body.page-project.project-scape-cc main.page .project-wrap > .gallery.editorial-gallery {
+        --scape-video-basis: 280px;
+        --scape-video-max-width: 390px;
+        --scape-video-max-height: min(76vh, 694px);
+        gap: 24px !important;
+    }
+}
+
+@media (max-width: 560px) {
+    body.page-project.project-scape-cc main.page .project-wrap > .gallery > .gallery-item,
+    body.page-project.project-scape-cc main.page .project-wrap > .gallery.editorial-gallery > .gallery-item,
+    body.page-project.project-scape-cc main.page .project-wrap > .gallery > .gallery-item.has-custom-video,
+    body.page-project.project-scape-cc main.page .project-wrap > .gallery.editorial-gallery > .gallery-item.has-custom-video {
+        flex-basis: 100% !important;
+        min-width: 0 !important;
+    }
+}
+
+/* The script intentionally reparents the burger to <body> for menu layering.
+   Keep that behavior, but make the control document-absolute rather than viewport-fixed,
+   so it scrolls away exactly like the MG logo. */
+@media (max-width: 991.98px) {
+    html body > button.burger {
+        position: absolute !important;
+        top: calc(var(--header-space, 35px) + 2px) !important;
+        right: var(--gutter, 20px) !important;
+        bottom: auto !important;
+        left: auto !important;
+    }
+}
+
+/* About: reserve a real column for the portrait and collapse earlier on tablets.
+   This prevents the text column from entering the visual footprint of the photo. */
+body.page-about main.page .container-custom > section.about-top {
+    grid-template-columns: minmax(0, 470px) minmax(0, 720px) !important;
+    justify-content: space-between !important;
+    column-gap: clamp(64px, 7vw, 128px) !important;
+    align-items: start !important;
+}
+
+body.page-about main.page .container-custom > section.about-top > * {
+    min-width: 0 !important;
+}
+
+body.page-about main.page .container-custom > section.about-top > .photo-block {
+    width: 100% !important;
+    max-width: 470px !important;
+    min-height: 620px !important;
+}
+
+body.page-about main.page .container-custom > section.about-top > div:last-child {
+    width: 100% !important;
+    max-width: 720px !important;
+    justify-self: end !important;
+}
+
+@media (max-width: 1180px) {
+    body.page-about main.page .container-custom > section.about-top {
+        grid-template-columns: minmax(0, 1fr) !important;
+        row-gap: clamp(44px, 6vw, 66px) !important;
+    }
+
+    body.page-about main.page .container-custom > section.about-top > .photo-block {
+        width: min(100%, 470px) !important;
+        min-height: 610px !important;
+    }
+
+    body.page-about main.page .container-custom > section.about-top > div:last-child {
+        max-width: 760px !important;
+        justify-self: start !important;
+    }
+}
+
+@media (max-width: 640px) {
+    body.page-about main.page .container-custom > section.about-top > .photo-block {
+        width: 100% !important;
+        min-height: min(112vw, 430px) !important;
+    }
+}
