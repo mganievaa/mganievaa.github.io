@@ -318,3 +318,109 @@ body.menu-open {
     touch-action: none;
 }
 
+/* =========================================================
+   Full-width project intro heading
+   Title uses the complete project width. The copy and series
+   controls share the row underneath it.
+   ========================================================= */
+
+body.page-project main.page .project-wrap > .project-intro-v4 {
+    display: block !important;
+    width: 100% !important;
+}
+
+body.page-project main.page .project-wrap > .project-intro-v4 > .project-intro-copy {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(210px, 270px) !important;
+    grid-template-rows: auto auto !important;
+    column-gap: clamp(48px, 8vw, 140px) !important;
+    row-gap: clamp(28px, 3vw, 52px) !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    align-items: start !important;
+}
+
+body.page-project main.page .project-wrap > .project-intro-v4 > .project-intro-copy > .project-title {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    text-wrap: balance;
+}
+
+body.page-project main.page .project-wrap > .project-intro-v4 > .project-intro-copy > .project-text {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    max-width: 1040px !important;
+    margin: 0 !important;
+}
+
+body.page-project main.page .project-wrap > .project-intro-v4 > .project-intro-copy > .project-intro-meta {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    align-self: start !important;
+}
+
+/* Tablet / mobile: title, text and controls return to a natural single column. */
+@media (max-width: 991.98px) {
+    body.page-project main.page .project-wrap > .project-intro-v4 > .project-intro-copy {
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-rows: auto auto auto !important;
+        row-gap: 32px !important;
+    }
+
+    body.page-project main.page .project-wrap > .project-intro-v4 > .project-intro-copy > .project-title {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+    }
+
+    body.page-project main.page .project-wrap > .project-intro-v4 > .project-intro-copy > .project-text {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+        max-width: 760px !important;
+    }
+
+    body.page-project main.page .project-wrap > .project-intro-v4 > .project-intro-copy > .project-intro-meta {
+        grid-column: 1 !important;
+        grid-row: 3 !important;
+        width: min(100%, 330px) !important;
+    }
+}
+
+/* =========================================================
+   Responsive project-title scale
+   Prevent the title from growing faster than the usable width.
+   ========================================================= */
+
+/* The previous 9.2vw value reaches ~156px at a 1692px viewport,
+   which makes medium-long project names wrap unnecessarily.
+   A slower scale preserves the editorial size while using the row better. */
+@media (min-width: 992px) {
+    body.page-project main.page .project-wrap
+    > .project-intro-v4
+    > .project-intro-copy
+    > .project-title {
+        font-size: clamp(72px, 7.35vw, 136px) !important;
+        line-height: .86 !important;
+        letter-spacing: -.025em !important;
+        text-wrap: balance;
+    }
+}
+
+/* On wide desktop screens there is enough room to keep ordinary project
+   names on one line without letting the type become excessively large. */
+@media (min-width: 1500px) {
+    body.page-project main.page .project-wrap
+    > .project-intro-v4
+    > .project-intro-copy
+    > .project-title {
+        font-size: min(7.35vw, 128px) !important;
+    }
+}
+
