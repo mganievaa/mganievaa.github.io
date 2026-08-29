@@ -71,7 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', updateProgress, { passive: true });
     window.addEventListener('resize', updateProgress);
 
-    // Build an editorial image rhythm without cropping any supplied artwork.
+    // Build an editorial rhythm for images, while all-video galleries use a
+    // generic responsive row layout shared by every project page.
     const layoutPattern = [
         'layout-wide',
         'layout-left',
@@ -87,18 +88,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const layoutRowPattern = [1, 2, 2, 3, 4, 4, 5, 6, 6, 7];
 
     document.querySelectorAll('.page-project .gallery').forEach((gallery) => {
-        gallery.classList.add('editorial-gallery');
-        const items = [...gallery.querySelectorAll('.gallery-item')];
+        const items = [...gallery.querySelectorAll(':scope > .gallery-item')];
+        const isVideoGallery = items.length > 0 && items.every((item) => {
+            const media = item.querySelector('img, video');
+            return media instanceof HTMLVideoElement;
+        });
+
+        gallery.classList.toggle('video-gallery', isVideoGallery);
+        gallery.classList.toggle('editorial-gallery', !isVideoGallery);
 
         items.forEach((item, index) => {
             const media = item.querySelector('img, video');
             const isVideo = media instanceof HTMLVideoElement;
             const cycle = Math.floor(index / layoutPattern.length);
             const patternIndex = index % layoutPattern.length;
-            item.classList.add(layoutPattern[patternIndex]);
+
             item.classList.toggle('is-video', isVideo);
-            item.style.gridRow = String(layoutRowPattern[patternIndex] + (cycle * 7));
             item.dataset.frame = `FRAME ${String(index + 1).padStart(2, '0')}`;
+
+            if (isVideoGallery) {
+                layoutPattern.forEach((className) => item.classList.remove(className));
+                item.style.removeProperty('grid-row');
+            } else {
+                item.classList.add(layoutPattern[patternIndex]);
+                item.style.gridRow = String(layoutRowPattern[patternIndex] + (cycle * 7));
+            }
 
             const readOrientation = () => {
                 if (!media) return;
@@ -217,7 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
         video.removeAttribute('controls');
         video.playsInline = true;
         video.setAttribute('tabindex', '-1');
-
         const ui = document.createElement('div');
         ui.className = 'custom-video-ui';
         ui.innerHTML = `
@@ -437,7 +450,6 @@ document.addEventListener('DOMContentLoaded', () => {
         syncState();
         return api;
     };
-
     const inlineVideoPlayers = new Map();
     document.querySelectorAll('.page-project .gallery-item video').forEach((video) => {
         const api = createCustomVideoPlayer(video);
