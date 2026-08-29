@@ -132,7 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (media.complete) readOrientation();
                 else media.addEventListener('load', readOrientation, { once: true });
             } else if (media instanceof HTMLVideoElement) {
-                media.preload = media.preload || 'metadata';
+                // Load only metadata up front. The intrinsic dimensions are known before
+                // playback starts, so starting the video cannot resize its gallery block.
+                media.preload = 'metadata';
+                media.setAttribute('preload', 'metadata');
                 media.playsInline = true;
                 if (media.readyState >= 1) readOrientation();
                 else media.addEventListener('loadedmetadata', readOrientation, { once: true });
