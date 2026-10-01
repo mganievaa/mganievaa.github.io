@@ -1,0 +1,291 @@
+/*
+ * Work filters — scoped exclusively to .page-work.
+ * Desktop: four centered pill controls.
+ * Mobile: 3-second centre-screen hold opens the filtering overlay.
+ */
+
+.page-work {
+    --filter-paper: #f1f1f1;
+    --filter-text: #1d0000;
+    --filter-accent: #8f0000;
+    --filter-instruction: #873232;
+}
+
+/* ---------- desktop pills ---------- */
+
+.page-work .work-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: clamp(10px, 1.25vw, 20px);
+    width: 100%;
+    margin: clamp(32px, 4vw, 58px) auto 0;
+}
+
+.page-work .work-filter-pill {
+    min-width: 0;
+    padding: 11px clamp(18px, 1.8vw, 30px) 10px;
+    border: 1px solid var(--filter-paper);
+    border-radius: 999px;
+    color: var(--filter-text);
+    background: var(--filter-paper);
+    font: 500 clamp(11px, .82vw, 14px)/1 'Poppins', sans-serif;
+    letter-spacing: .105em;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        color .24s ease,
+        background-color .24s ease,
+        border-color .24s ease,
+        transform .35s cubic-bezier(.22, 1, .36, 1);
+}
+
+.page-work .work-filter-pill:hover,
+.page-work .work-filter-pill:focus-visible {
+    border-color: var(--filter-accent);
+    color: var(--filter-accent);
+    background: var(--filter-paper);
+    transform: translateY(-2px);
+}
+
+.page-work .work-filter-pill.is-selected,
+.page-work .work-filter-pill[aria-pressed='true'],
+.page-work .work-filter-pill.is-selected:hover,
+.page-work .work-filter-pill[aria-pressed='true']:hover {
+    border-color: var(--filter-accent);
+    color: var(--filter-paper);
+    background: var(--filter-accent);
+}
+
+.page-work .work-filter-pill:focus-visible,
+.page-work .work-filter-close:focus-visible,
+.page-work .work-filter-overlay-option:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+}
+
+/* Filtering keeps Bootstrap row behaviour intact: only the column disappears. */
+.page-work .work-project-item[hidden] {
+    display: none !important;
+}
+
+/* ---------- mobile instruction + invisible hold zone ---------- */
+
+.page-work .work-filter-mobile-instruction,
+.page-work .work-filter-overlay {
+    display: none;
+}
+
+.page-work .mobile-filter-hold-zone {
+    display: none !important;
+}
+
+@media (max-width: 991.98px) {
+    .page-work .work-grid,
+    .page-work .work-grid a,
+    .page-work .work-grid img {
+        -webkit-touch-callout: none;
+    }
+
+
+    .page-work .work-filter-bar {
+        display: none !important;
+    }
+
+    .page-work .work-filter-mobile-instruction {
+        display: block;
+        width: min(100%, 520px);
+        margin: clamp(30px, 8vw, 54px) auto 0;
+        color: var(--filter-instruction);
+        font: 500 clamp(9px, 2.6vw, 12px)/1.5 'Poppins', sans-serif;
+        letter-spacing: .12em;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    /* This element is intentionally non-interactive.
+       JS only reads its fixed viewport rectangle. */
+    .page-work .mobile-filter-hold-zone {
+        position: fixed;
+        z-index: -1;
+        left: 50%;
+        top: 50%;
+        display: block;
+        width: min(58vw, 390px);
+        height: min(36dvh, 300px);
+        pointer-events: none;
+        opacity: 0;
+        transform: translate(-50%, -50%);
+    }
+
+    /* ---------- mobile filter overlay ---------- */
+
+    .page-work .work-filter-overlay {
+        position: fixed;
+        z-index: 12000;
+        inset: 0;
+        display: block;
+        color: var(--filter-paper);
+        background: var(--filter-accent);
+        clip-path: circle(0 at var(--filter-origin-x, 50vw) var(--filter-origin-y, 50vh));
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+            clip-path .82s cubic-bezier(.22, 1, .36, 1),
+            visibility .82s;
+    }
+
+    .page-work .work-filter-overlay.is-open {
+        clip-path: circle(160vmax at var(--filter-origin-x, 50vw) var(--filter-origin-y, 50vh));
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    /* Reset the collapsed circle at the new hold point before each opening.
+       This prevents a second opening from reusing the previous origin. */
+    .page-work .work-filter-overlay.is-preparing {
+        visibility: hidden !important;
+        pointer-events: none !important;
+        transition: none !important;
+        clip-path: circle(0 at var(--filter-origin-x, 50vw) var(--filter-origin-y, 50vh)) !important;
+    }
+
+    .page-work .work-filter-overlay-inner {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        min-height: 100dvh;
+        padding: clamp(28px, 7vw, 44px) var(--gutter, 24px) clamp(34px, 8vw, 52px);
+    }
+
+    .page-work .work-filter-overlay-top {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        min-height: 32px;
+        opacity: 0;
+        transform: translateY(-18px);
+        transition: opacity .38s ease, transform .65s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .page-work .work-filter-overlay.is-open .work-filter-overlay-top {
+        opacity: 1;
+        transform: none;
+        transition-delay: .12s;
+    }
+
+    .page-work .work-filter-close {
+        position: relative;
+        display: block;
+        width: 44px;
+        height: 32px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .page-work .work-filter-close span {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        display: block;
+        width: 100%;
+        height: 2px;
+        margin: 0;
+        border-radius: 2px;
+        background: var(--filter-paper);
+        transform-origin: center;
+    }
+
+    .page-work .work-filter-close span:first-child {
+        transform: translateY(-1px) rotate(45deg);
+    }
+
+    .page-work .work-filter-close span:last-child {
+        transform: translateY(-1px) rotate(-45deg);
+    }
+
+    .page-work .work-filter-overlay-list {
+        width: 100%;
+        margin: auto 0;
+    }
+
+    .page-work .work-filter-overlay-option {
+        display: flex;
+        align-items: baseline;
+        justify-content: flex-start;
+        gap: 0;
+        width: 100%;
+        padding: clamp(18px, 5vw, 28px) 0 clamp(16px, 4.5vw, 25px);
+        border: 0;
+        color: var(--filter-paper);
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(26px);
+        transition:
+            color .28s ease,
+            opacity .42s ease,
+            transform .72s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .page-work .work-filter-overlay-option > span {
+        font: 500 clamp(30px, 8.8vw, 50px)/.94 'Forum', serif;
+        letter-spacing: -.025em;
+    }
+
+    .page-work .work-filter-overlay.is-open .work-filter-overlay-option {
+        opacity: 1;
+        transform: none;
+    }
+
+    .page-work .work-filter-overlay.is-open .work-filter-overlay-option:nth-child(1) { transition-delay: .16s; }
+    .page-work .work-filter-overlay.is-open .work-filter-overlay-option:nth-child(2) { transition-delay: .23s; }
+    .page-work .work-filter-overlay.is-open .work-filter-overlay-option:nth-child(3) { transition-delay: .30s; }
+    .page-work .work-filter-overlay.is-open .work-filter-overlay-option:nth-child(4) { transition-delay: .37s; }
+
+    /* Requested selected state: only the text changes to dark burgundy. */
+    .page-work .work-filter-overlay-option.is-selected,
+    .page-work .work-filter-overlay-option[aria-pressed='true'] {
+        color: var(--filter-text);
+    }
+
+    .page-work .work-filter-overlay-option:active {
+        transform: translateY(1px);
+    }
+
+    html:has(body.page-work.filter-menu-open),
+    body.page-work.filter-menu-open {
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
+    }
+
+    body.page-work.filter-menu-open {
+        touch-action: none;
+    }
+}
+
+@media (max-width: 428px) {
+    .page-work .work-filter-mobile-instruction {
+        width: min(100%, 310px);
+    }
+
+    .page-work .work-filter-overlay-option > span {
+        font-size: clamp(28px, 8.4vw, 42px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-work .work-filter-pill,
+    .page-work .work-filter-overlay,
+    .page-work .work-filter-overlay-top,
+    .page-work .work-filter-overlay-option {
+        transition-duration: .01ms !important;
+        transition-delay: 0ms !important;
+    }
+}

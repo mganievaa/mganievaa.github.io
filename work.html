@@ -32,7 +32,7 @@ body{
     margin:0 auto;
     padding-left:clamp(24px,5vw,160px);
     padding-right:clamp(24px,5vw,160px);
-     padding-bottom: 80px; 
+    padding-bottom:80px;
 }
 
 .topbar{
@@ -123,17 +123,16 @@ body{
 }
 
 @media(max-width:992px){
-
-.work-title{
-    font-size:24px;
-}
-
+    .work-title{
+        font-size:24px;
+    }
 }
 
 </style>
 
-    <link href="./src/enhancements.css" rel="stylesheet">
-    <link rel="icon" href="./src/favicon.svg" type="image/svg+xml">
+<link href="./src/enhancements.css" rel="stylesheet">
+<link href="./src/work-filters.css" rel="stylesheet">
+<link rel="icon" href="./src/favicon.svg" type="image/svg+xml">
 </head>
 
 <body class="page-work">
@@ -160,6 +159,17 @@ body{
 
 </div>
 
+<section class="work-filter-bar" aria-label="Filter portfolio projects">
+    <button class="work-filter-pill" type="button" data-filter="graphic-design" aria-pressed="false">GRAPHIC DESIGN</button>
+    <button class="work-filter-pill" type="button" data-filter="content-creation" aria-pressed="false">CONTENT CREATION</button>
+    <button class="work-filter-pill" type="button" data-filter="photography" aria-pressed="false">PHOTOGRAPHY</button>
+    <button class="work-filter-pill" type="button" data-filter="videography" aria-pressed="false">VIDEOGRAPHY</button>
+</section>
+
+<p class="work-filter-mobile-instruction">
+    PRESS &amp; HOLD ANYWHERE ON THE PAGE FOR 3 SECONDS TO OPEN FILTERS
+</p>
+
 </header>
 
 
@@ -169,323 +179,235 @@ body{
 
 <div class="row g-4">
 
-<div class="col-lg-6">
-
+<div class="col-lg-6 work-project-item" data-tags="graphic-design">
 <a href="bahore.html" class="work-link">
-
 <div class="work-card">
-
 <img src="./src/image1.png" alt="Bahoré editorial design project preview" loading="lazy">
-
 <div class="work-overlay">
 <div class="work-title">Bahoré</div>
 <div class="work-category">EVENT BRANDING</div>
 </div>
-
 </div>
-
 </a>
-
 </div>
 
-
-<div class="col-lg-6">
-
+<div class="col-lg-6 work-project-item" data-tags="graphic-design photography">
 <a href="dark.html" class="work-link">
-
 <div class="work-card">
-
 <img src="./src/image2.png" alt="Dark Matter visual identity project preview" loading="lazy">
-
 <div class="work-overlay">
 <div class="work-title">Dark Matter</div>
 <div class="work-category">SPECULATIVE PACKAGING</div>
 </div>
-
 </div>
-
 </a>
-
 </div>
 
-
-<div class="col-lg-6">
-
+<div class="col-lg-6 work-project-item" data-tags="graphic-design photography">
 <a href="kazimir.html" class="work-link">
-
 <div class="work-card">
-
 <img src="./src/image3.png" alt="Kazimir type specimen project preview" loading="lazy">
-
 <div class="work-overlay">
 <div class="work-title">Kazimir Type Specimen</div>
 <div class="work-category">EDITORIAL / TYPOGRAPHY</div>
 </div>
-
 </div>
-
 </a>
-
 </div>
 
-
-<div class="col-lg-6">
-
+<div class="col-lg-6 work-project-item" data-tags="graphic-design">
 <a href="lionel.html" class="work-link">
-
 <div class="work-card">
-
 <img src="./src/image4.png" alt="Lionel’s Cafe branding project preview" loading="lazy">
-
 <div class="work-overlay">
 <div class="work-title">Lionel’s Cafe</div>
 <div class="work-category">BRAND IDENTITY</div>
 </div>
-
 </div>
-
 </a>
-    
 </div>
 
-<div class="col-lg-6">
-
-    <a href="billievinyl.html" class="work-link">
-
-        <div class="work-card">
-
-            <img src="./src/billievinyl-preview.png" alt=""Bored" by Billie Eilish album cover project preview" loading="lazy">
-
-            <div class="work-overlay">
-                <div class="work-title">Bored by Billie Eilish</div>
-                <div class="work-category">VINYL RECORD ALBUM COVER</div>
-            </div>
-
-        </div>
-
-    </a>
-
+<div class="col-lg-6 work-project-item" data-tags="graphic-design">
+<a href="billievinyl.html" class="work-link">
+<div class="work-card">
+<img src="./src/billievinyl-preview.png" alt="Bored by Billie Eilish album cover project preview" loading="lazy">
+<div class="work-overlay">
+<div class="work-title">Bored by Billie Eilish</div>
+<div class="work-category">VINYL RECORD ALBUM COVER</div>
+</div>
+</div>
+</a>
 </div>
 
-    <div class="col-lg-6">
-
-    <a href="acceptance.html" class="work-link">
-
-        <div class="work-card">
-
-            <img src="./src/acceptance-preview.png" alt="Acceptance experimental publication project preview" loading="lazy">
-
-            <div class="work-overlay">
-                <div class="work-title">Acceptance</div>
-                <div class="work-category">EXPERIMENTAL PUBLICATION</div>
-            </div>
-
-        </div>
-
-    </a>
-
+<div class="col-lg-6 work-project-item" data-tags="graphic-design photography">
+<a href="acceptance.html" class="work-link">
+<div class="work-card">
+<img src="./src/acceptance-preview.png" alt="Acceptance experimental publication project preview" loading="lazy">
+<div class="work-overlay">
+<div class="work-title">Acceptance</div>
+<div class="work-category">EXPERIMENTAL PUBLICATION</div>
 </div>
-    
-    <div class="col-lg-6">
-
-    <a href="scape-mural.html" class="work-link">
-
-        <div class="work-card">
-
-            <img src="./src/scape-mural-preview.png" alt="Scape Mural content creation project preview" loading="lazy">
-
-            <div class="work-overlay">
-                <div class="work-title">Scape Mural</div>
-                <div class="work-category">CONTENT CREATION</div>
-            </div>
-
-        </div>
-
-    </a>
-
+</div>
+</a>
 </div>
 
-
-<div class="col-lg-6">
-
-    <a href="atceatera-watch.html" class="work-link">
-
-        <div class="work-card">
-
-            <img src="./src/atceatera-watch-preview.png" alt="Atceatera Watch content creation project preview" loading="lazy">
-
-            <div class="work-overlay">
-                <div class="work-title">Atceatera Watch</div>
-                <div class="work-category">CONTENT CREATION</div>
-            </div>
-
-        </div>
-
-    </a>
-
+<div class="col-lg-6 work-project-item" data-tags="content-creation videography">
+<a href="scape-mural.html" class="work-link">
+<div class="work-card">
+<img src="./src/scape-mural-preview.png" alt="Scape Mural content creation project preview" loading="lazy">
+<div class="work-overlay">
+<div class="work-title">Scape Mural</div>
+<div class="work-category">CONTENT CREATION</div>
+</div>
+</div>
+</a>
 </div>
 
-    <div class="col-lg-6">
-
-    <a href="scape-cc.html" class="work-link">
-
-        <div class="work-card">
-
-            <img src="./src/scape-cc/scape-cc-preview.png" alt="Scape Content Creation content creation project preview" loading="lazy">
-
-            <div class="work-overlay">
-                <div class="work-title">Scape Content Creation</div>
-                <div class="work-category">CONTENT CREATION</div>
-            </div>
-
-        </div>
-
-    </a>
-
+<div class="col-lg-6 work-project-item" data-tags="content-creation videography">
+<a href="atceatera-watch.html" class="work-link">
+<div class="work-card">
+<img src="./src/atceatera-watch-preview.png" alt="Atceatera Watch content creation project preview" loading="lazy">
+<div class="work-overlay">
+<div class="work-title">Atceatera Watch</div>
+<div class="work-category">CONTENT CREATION</div>
+</div>
+</div>
+</a>
 </div>
 
-<div class="col-lg-6">
-
-    <a href="shortfilm.html" class="work-link">
-
-        <div class="work-card">
-
-            <img src="./src/shortfilm/shortfilm-preview.png" alt="Short-Form Film Studies content creation project preview" loading="lazy">
-
-            <div class="work-overlay">
-                <div class="work-title">Short-Form Film Studies</div>
-                <div class="work-category">CONTENT CREATION</div>
-            </div>
-
-        </div>
-
-    </a>
-
+<div class="col-lg-6 work-project-item" data-tags="content-creation videography">
+<a href="scape-cc.html" class="work-link">
+<div class="work-card">
+<img src="./src/scape-cc/scape-cc-preview.png" alt="Scape Content Creation content creation project preview" loading="lazy">
+<div class="work-overlay">
+<div class="work-title">Scape Content Creation</div>
+<div class="work-category">CONTENT CREATION</div>
+</div>
+</div>
+</a>
 </div>
 
-<div class="col-lg-6">
-
-    <a href="12bar.html" class="work-link">
-
-        <div class="work-card">
-
-            <img src="./src/12bar/12bar-preview.png" alt="12 Bar content creation project preview" loading="lazy">
-
-            <div class="work-overlay">
-                <div class="work-title">12 Bar</div>
-                <div class="work-category">CONTENT CREATION</div>
-            </div>
-
-        </div>
-
-    </a>
-
+<div class="col-lg-6 work-project-item" data-tags="content-creation videography">
+<a href="shortfilm.html" class="work-link">
+<div class="work-card">
+<img src="./src/shortfilm/shortfilm-preview.png" alt="Short-Form Film Studies content creation project preview" loading="lazy">
+<div class="work-overlay">
+<div class="work-title">Short-Form Film Studies</div>
+<div class="work-category">CONTENT CREATION</div>
+</div>
+</div>
+</a>
 </div>
 
-    <div class="col-lg-6">
-
-    <a href="georgia.html" class="work-link">
-
-        <div class="work-card">
-
-            <img src="./src/georgia/georgia-preview.png" alt="Georgia photography project preview" loading="lazy">
-
-            <div class="work-overlay">
-                <div class="work-title">Georgian Nature</div>
-                <div class="work-category">PHOTOGRAPHY</div>
-            </div>
-
-        </div>
-
-    </a>
-
+<div class="col-lg-6 work-project-item" data-tags="content-creation videography">
+<a href="12bar.html" class="work-link">
+<div class="work-card">
+<img src="./src/12bar/12bar-preview.png" alt="12 Bar content creation project preview" loading="lazy">
+<div class="work-overlay">
+<div class="work-title">12 Bar</div>
+<div class="work-category">CONTENT CREATION</div>
+</div>
+</div>
+</a>
 </div>
 
-    <div class="col-lg-6">
-
-    <a href="hiddentruth.html" class="work-link">
-
-        <div class="work-card">
-
-            <img src="./src/hiddentruth/hiddentruth-preview.png" alt="Hidden Truth photography project preview" loading="lazy">
-
-            <div class="work-overlay">
-                <div class="work-title">Hidden Truth</div>
-                <div class="work-category">PHOTOGRAPHY</div>
-            </div>
-
-        </div>
-
-    </a>
-
+<div class="col-lg-6 work-project-item" data-tags="photography">
+<a href="georgia.html" class="work-link">
+<div class="work-card">
+<img src="./src/georgia/georgia-preview.png" alt="Georgia photography project preview" loading="lazy">
+<div class="work-overlay">
+<div class="work-title">Georgian Nature</div>
+<div class="work-category">PHOTOGRAPHY</div>
+</div>
+</div>
+</a>
 </div>
 
-    <div class="col-lg-6">
-
-    <a href="speechless.html" class="work-link">
-
-        <div class="work-card">
-
-            <img src="./src/speechless/speechless-preview.png" alt="Speechless photography project preview" loading="lazy">
-
-            <div class="work-overlay">
-                <div class="work-title">Speechless</div>
-                <div class="work-category">PHOTOGRAPHY</div>
-            </div>
-
-        </div>
-
-    </a>
-
+<div class="col-lg-6 work-project-item" data-tags="photography">
+<a href="hiddentruth.html" class="work-link">
+<div class="work-card">
+<img src="./src/hiddentruth/hiddentruth-preview.png" alt="Hidden Truth photography project preview" loading="lazy">
+<div class="work-overlay">
+<div class="work-title">Hidden Truth</div>
+<div class="work-category">PHOTOGRAPHY</div>
+</div>
+</div>
+</a>
 </div>
 
-<div class="col-lg-6">
-
-    <a href="openhouse.html" class="work-link">
-
-        <div class="work-card">
-
-            <img src="./src/openhouse/openhouse-preview.png" alt="Open House photography project preview" loading="lazy">
-
-            <div class="work-overlay">
-                <div class="work-title">Open House</div>
-                <div class="work-category">PHOTOGRAPHY</div>
-            </div>
-
-        </div>
-
-    </a>
-
+<div class="col-lg-6 work-project-item" data-tags="photography">
+<a href="speechless.html" class="work-link">
+<div class="work-card">
+<img src="./src/speechless/speechless-preview.png" alt="Speechless photography project preview" loading="lazy">
+<div class="work-overlay">
+<div class="work-title">Speechless</div>
+<div class="work-category">PHOTOGRAPHY</div>
 </div>
-    
+</div>
+</a>
+</div>
+
+<div class="col-lg-6 work-project-item" data-tags="photography">
+<a href="openhouse.html" class="work-link">
+<div class="work-card">
+<img src="./src/openhouse/openhouse-preview.png" alt="Open House photography project preview" loading="lazy">
+<div class="work-overlay">
+<div class="work-title">Open House</div>
+<div class="work-category">PHOTOGRAPHY</div>
+</div>
+</div>
+</a>
 </div>
 
 </div>
-
 </div>
-
+</div>
 </section>
 
 
 <div class="mobile-menu" id="mobileMenu">
-
 <div class="mobile-menu-inner">
-
 <div class="mobile-menu-top">
 <a href="index.html" class="mobile-brand">MG</a>
 </div>
-
 <nav class="mobile-nav">
 <a href="work.html">WORK</a>
 <a href="about.html">ABOUT</a>
 </nav>
-
+</div>
 </div>
 
+
+
+<div class="work-filter-overlay" id="workFilterOverlay" aria-hidden="true">
+    <div class="work-filter-overlay-inner">
+        <div class="work-filter-overlay-top">
+            <button class="work-filter-close" type="button" aria-label="Close filters">
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div class="work-filter-overlay-list" role="group" aria-label="Filter portfolio projects">
+            <button class="work-filter-overlay-option" type="button" data-filter="graphic-design" aria-pressed="false">
+                <span>GRAPHIC DESIGN</span>
+            </button>
+            <button class="work-filter-overlay-option" type="button" data-filter="content-creation" aria-pressed="false">
+                <span>CONTENT CREATION</span>
+            </button>
+            <button class="work-filter-overlay-option" type="button" data-filter="photography" aria-pressed="false">
+                <span>PHOTOGRAPHY</span>
+            </button>
+            <button class="work-filter-overlay-option" type="button" data-filter="videography" aria-pressed="false">
+                <span>VIDEOGRAPHY</span>
+            </button>
+        </div>
+    </div>
 </div>
 
 
 <script src="./src/script.js"></script>
+<script src="./src/work-filters.js"></script>
 
 </body>
 </html>
