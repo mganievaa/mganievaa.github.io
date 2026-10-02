@@ -212,7 +212,6 @@
     .page-work .work-filter-overlay-list {
         width: 100%;
         margin: auto 0;
-        border-top: 1px solid rgba(241, 241, 241, .52);
     }
 
     .page-work .work-filter-overlay-option {
@@ -223,7 +222,6 @@
         width: 100%;
         padding: clamp(18px, 5vw, 28px) 0 clamp(16px, 4.5vw, 25px);
         border: 0;
-        border-bottom: 1px solid rgba(241, 241, 241, .52);
         color: var(--filter-paper);
         background: transparent;
         text-align: left;
