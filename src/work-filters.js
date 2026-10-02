@@ -12,6 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const allFilterButtons = [...desktopButtons, ...overlayButtons];
 
+    document.querySelectorAll('.work-card img').forEach((image) => {
+        image.draggable = false;
+        image.setAttribute('draggable', 'false');
+    });
+
+
     const syncButtons = () => {
         allFilterButtons.forEach((button) => {
             const selected = activeFilters.has(button.dataset.filter);
@@ -73,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     */
 
     const HOLD_MS = 3000;
-    const MOVE_TOLERANCE = 14;
+    const MOVE_TOLERANCE = 24;
 
     let holdTimer = 0;
     let holdStartX = 0;
@@ -83,10 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let activePointerId = null;
     let activeTouchId = null;
     let openingFrame = 0;
+    let holdGuardTimer = 0;
 
     const clearHoldTimer = () => {
         window.clearTimeout(holdTimer);
+        window.clearTimeout(holdGuardTimer);
         holdTimer = 0;
+        holdGuardTimer = 0;
+        body.classList.remove('is-filter-holding');
     };
 
     const resetHold = () => {
@@ -164,6 +174,10 @@ document.addEventListener('DOMContentLoaded', () => {
         holdStartY = y;
         holdTriggered = false;
 
+        holdGuardTimer = window.setTimeout(() => {
+            if (holdTimer) body.classList.add('is-filter-holding');
+        }, 320);
+
         holdTimer = window.setTimeout(() => {
             holdTriggered = true;
             suppressNextClick = true;
@@ -197,8 +211,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (activeTouchId === null || !holdTimer) return;
 
         const touch = [...event.touches].find((item) => item.identifier === activeTouchId);
-        if (!touch || movedTooFar(touch.clientX, touch.clientY)) resetHold();
-    }, { capture: true, passive: true });
+        if (!touch) {
+            resetHold();
+            return;
+        }
+
+        if (movedTooFar(touch.clientX, touch.clientY)) {
+            resetHold();
+            return;
+        }
+
+        if (body.classList.contains('is-filter-holding')) {
+            event.preventDefault();
+        }
+    }, { capture: true, passive: false });
 
     document.addEventListener('touchend', (event) => {
         if (activeTouchId === null) return;
@@ -272,6 +298,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isHoldExcludedTarget(event.target)) return;
 
         event.preventDefault();
+    }, true);
+
+    document.addEventListener('selectionstart', (event) => {
+        if (!mobileQuery.matches) return;
+        if (isHoldExcludedTarget(event.target)) return;
+        event.preventDefault();
+    }, true);
+
+    document.addEventListener('dragstart', (event) => {
+        if (!mobileQuery.matches) return;
+        if (event.target instanceof Element && event.target.closest('.work-grid')) {
+            event.preventDefault();
+        }
     }, true);
 
     syncButtons();
