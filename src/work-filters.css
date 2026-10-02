@@ -26,7 +26,7 @@
 .page-work .work-filter-pill {
     min-width: 0;
     padding: 11px clamp(18px, 1.8vw, 30px) 10px;
-    border: 1px solid var(--filter-paper);
+    border: 1px solid var(--filter-text);
     border-radius: 999px;
     color: var(--filter-text);
     background: var(--filter-paper);
@@ -212,6 +212,7 @@
     .page-work .work-filter-overlay-list {
         width: 100%;
         margin: auto 0;
+        border-top: 1px solid rgba(241, 241, 241, .52);
     }
 
     .page-work .work-filter-overlay-option {
@@ -222,6 +223,7 @@
         width: 100%;
         padding: clamp(18px, 5vw, 28px) 0 clamp(16px, 4.5vw, 25px);
         border: 0;
+        border-bottom: 1px solid rgba(241, 241, 241, .52);
         color: var(--filter-paper);
         background: transparent;
         text-align: left;
@@ -287,5 +289,41 @@
     .page-work .work-filter-overlay-option {
         transition-duration: .01ms !important;
         transition-delay: 0ms !important;
+    }
+}
+
+
+/* Mobile long-press gesture protection */
+@media (max-width: 991.98px) {
+    body.page-work,
+    body.page-work .work-filter-mobile-instruction,
+    body.page-work .work-grid,
+    body.page-work .work-project-item,
+    body.page-work .work-link,
+    body.page-work .work-card,
+    body.page-work .work-card img {
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        -webkit-touch-callout: none !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body.page-work .work-card img {
+        -webkit-user-drag: none;
+        user-drag: none;
+    }
+
+    body.page-work .work-filter-mobile-instruction,
+    body.page-work .work-grid,
+    body.page-work .work-project-item,
+    body.page-work .work-link,
+    body.page-work .work-card {
+        touch-action: pan-y;
+    }
+
+    body.page-work.is-filter-holding {
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        -webkit-touch-callout: none !important;
     }
 }
